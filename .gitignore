@@ -1,3 +1,11 @@
+*.iml
+/local.properties
+.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+local.properties
 # Gradle files
 .gradle/
 build/
@@ -16,8 +24,6 @@ captures/
 output.json
 
 # IntelliJ
-*.iml
-.idea/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
