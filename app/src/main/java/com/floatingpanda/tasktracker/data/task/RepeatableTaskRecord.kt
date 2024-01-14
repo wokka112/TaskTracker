@@ -36,10 +36,9 @@ class RepeatableTaskRecord(
         if (isComplete)
             return true
 
-        if (template.subPeriod == null)
-            return false;
-
-        val timesPerSubPeriod = template.timesPerSubPeriod ?: Int.MAX_VALUE
+        var timesPerSubPeriod = template.timesPerSubPeriod
+        if (timesPerSubPeriod == null)
+            timesPerSubPeriod = template.timesPerPeriod
 
         return getCompletionsForSubPeriod() >= timesPerSubPeriod
     }
@@ -56,7 +55,7 @@ class RepeatableTaskRecord(
 
         var completionsInPeriod = 0;
         do {
-            completionsInPeriod += completionsPerDate.getOrDefault(today.toString(), 0)
+            completionsInPeriod += completionsPerDate.getOrDefault(earlierDayInPeriod.toString(), 0)
             earlierDayInPeriod = earlierDayInPeriod.plusDays(1)
         } while (!earlierDayInPeriod.isAfter(today))
 
