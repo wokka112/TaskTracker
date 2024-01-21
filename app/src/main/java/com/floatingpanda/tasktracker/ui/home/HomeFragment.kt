@@ -28,8 +28,17 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val listView = binding.recordsList
-        listView.adapter = RepeatableTaskRecordAdapter(homeViewModel.records)
+        val recyclerView = binding.recordsList
+
+        homeViewModel.getRecords().observe(
+            this.viewLifecycleOwner
+        ) { records ->
+            recyclerView.adapter = RepeatableTaskRecordAdapter(
+                records,
+                homeViewModel::updateRecord
+            )
+        }
+
         return root
     }
 

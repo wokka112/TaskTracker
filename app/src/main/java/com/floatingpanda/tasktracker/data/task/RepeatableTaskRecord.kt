@@ -4,6 +4,7 @@ import com.floatingpanda.tasktracker.data.Period
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoField
+import java.util.Objects
 
 class RepeatableTaskRecord(
     private val template: RepeatableTaskTemplate,
@@ -73,5 +74,21 @@ class RepeatableTaskRecord(
         }
 
         return LocalDate.now()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null)
+            return false
+
+        if (other !is RepeatableTaskRecord)
+            return false
+
+        return other.template == this.template
+                && other.startDate == this.startDate
+                && other.endDate == this.endDate
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(template, startDate, endDate)
     }
 }

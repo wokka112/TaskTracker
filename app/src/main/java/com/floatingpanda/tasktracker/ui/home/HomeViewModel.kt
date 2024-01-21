@@ -1,5 +1,7 @@
 package com.floatingpanda.tasktracker.ui.home
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
@@ -7,9 +9,14 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.TaskDetails
 import java.util.Calendar
+import java.util.stream.Collectors
 
 class HomeViewModel : ViewModel() {
-    val records: List<RepeatableTaskRecord>
+    private val records: MutableLiveData<List<RepeatableTaskRecord>>
+
+    fun getRecords(): LiveData<List<RepeatableTaskRecord>> {
+        return records
+    }
 
     init {
         val today = Calendar.getInstance()
@@ -115,7 +122,8 @@ class HomeViewModel : ViewModel() {
         val breakFromWorkRecord =
             RepeatableTaskRecord(breakFromWorkTemplate, today.timeInMillis, nextYear.timeInMillis)
 
-        records = listOf(
+        records = MutableLiveData()
+        records.value = listOf(
             wakeUpRecord,
             stretchRecord,
             ocdGroupRecord,
@@ -127,5 +135,19 @@ class HomeViewModel : ViewModel() {
             holidayRecord,
             breakFromWorkRecord
         )
+    }
+
+    fun updateRecord(record: RepeatableTaskRecord) {
+        var storedRecords: List<RepeatableTaskRecord>? = records.value
+
+        if (storedRecords == null)
+            return
+
+        records.postValue(storedRecords.stream().map {
+            if (it.title == record.title)
+                record
+            else
+                it
+        }.collect(Collectors.toList()))
     }
 }

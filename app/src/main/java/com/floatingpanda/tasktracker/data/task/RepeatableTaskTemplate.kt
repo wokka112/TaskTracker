@@ -2,6 +2,7 @@ package com.floatingpanda.tasktracker.data.task
 
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
+import java.util.Objects
 
 // TODO make template constructor private and then provide constructors for different types like daily, etc.
 //   Or do we use a builder maybe?
@@ -26,4 +27,30 @@ data class RepeatableTaskTemplate(
         get() = details.info;
     val category: String
         get() = details.category
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null)
+            return false
+
+        if (other !is RepeatableTaskTemplate)
+            return false
+
+        return other.details == this.details
+                && other.repeatPeriod == this.repeatPeriod
+                && other.timesPerPeriod == this.timesPerPeriod
+                && other.subPeriod == this.subPeriod
+                && other.timesPerSubPeriod == this.timesPerSubPeriod
+                && other.eligibleDays == this.eligibleDays
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(
+            details,
+            repeatPeriod,
+            timesPerPeriod,
+            subPeriod,
+            timesPerSubPeriod,
+            eligibleDays
+        )
+    }
 }
