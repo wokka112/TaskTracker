@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/page_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="Schedule Task"
+        android:textSize="32dp"
+        android:textColor="#000000" />
+
+    <TextView
+        android:id="@+id/period_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/page_title"
+        android:layout_marginTop="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="10dp"
+        android:text="Period"
+        android:textSize="24dp" />
+
+    <Spinner
+        android:id="@+id/period_dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <TextView
+        android:id="@+id/times_per_period_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/period_header"
+        app:layout_constraintTop_toBottomOf="@id/period_dropdown"
+        android:layout_marginTop="10dp"
+        android:text="Times Per Period"
+        android:textSize="24dp" />
+
+    <EditText
+        android:id="@+id/times_per_period_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/times_per_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Enter times per period..."
+        android:gravity="right"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/sub_period_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/period_header"
+        app:layout_constraintTop_toBottomOf="@id/times_per_period_input"
+        android:layout_marginTop="10dp"
+        android:text="Sub Period (Optional)"
+        android:textSize="24dp" />
+
+    <CheckBox
+        android:id="@+id/sub_period_enabled_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/sub_period_header"
+        app:layout_constraintBottom_toBottomOf="@id/sub_period_header"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Enabled"
+        android:gravity="end|center"
+        android:layoutDirection="rtl"
+        android:layout_marginRight="5dp" />
+
+    <Spinner
+        android:id="@+id/sub_period_dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/sub_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp" />
+
+    <TextView
+        android:id="@+id/times_per_sub_period_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/period_header"
+        app:layout_constraintTop_toBottomOf="@id/sub_period_dropdown"
+        android:layout_marginTop="10dp"
+        android:text="Times Per Sub Period"
+        android:textSize="24dp" />
+
+    <EditText
+        android:id="@+id/times_per_sub_period_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/times_per_sub_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:hint="Enter times per sub period..."
+        android:gravity="right"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/days_checkbox_group_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/period_header"
+        app:layout_constraintTop_toBottomOf="@id/times_per_sub_period_input"
+        android:layout_marginTop="10dp"
+        android:text="Eligible Days"
+        android:textSize="24dp" />
+
+    <LinearLayout
+        android:id="@+id/days_checkbox_group"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/days_checkbox_group_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center_horizontal">
+
+        <CheckBox
+            android:id="@+id/days_checkbox_monday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="M"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_tuesday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_wednesday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="W"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_thursday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_friday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_sunday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_saturday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:checked="true" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/continue_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/days_checkbox_group"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="15dp"
+        android:text="Continue" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/continue_button"
+        app:layout_constraintRight_toLeftOf="@id/continue_button"
+        android:layout_marginRight="10dp"
+        android:text="Cancel"
+        android:backgroundTint="@android:color/holo_red_dark" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
