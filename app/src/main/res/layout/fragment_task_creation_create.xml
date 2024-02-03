@@ -17,7 +17,7 @@
         android:textColor="#000000" />
 
     <TextView
-        android:id="@+id/period_header"
+        android:id="@+id/title_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/page_title"
@@ -31,7 +31,7 @@
         android:id="@+id/title_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/period_header"
+        app:layout_constraintTop_toBottomOf="@id/title_header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="15dp"
@@ -39,20 +39,20 @@
         android:hint="Enter a title..." />
 
     <TextView
-        android:id="@+id/times_per_period_header"
+        android:id="@+id/category_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/period_header"
+        app:layout_constraintLeft_toLeftOf="@id/title_header"
         app:layout_constraintTop_toBottomOf="@id/title_input"
         android:layout_marginTop="10dp"
         android:text="Category"
         android:textSize="24dp" />
 
     <EditText
-        android:id="@+id/times_per_period_input"
+        android:id="@+id/category_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/times_per_period_header"
+        app:layout_constraintTop_toBottomOf="@id/category_header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="15dp"
@@ -60,11 +60,11 @@
         android:hint="Enter a category..." />
 
     <TextView
-        android:id="@+id/sub_period_header"
+        android:id="@+id/info_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="@id/period_header"
-        app:layout_constraintTop_toBottomOf="@id/times_per_period_input"
+        app:layout_constraintLeft_toLeftOf="@id/title_header"
+        app:layout_constraintTop_toBottomOf="@id/category_input"
         android:layout_marginTop="10dp"
         android:text="Info (Optional)"
         android:textSize="24dp" />
@@ -73,7 +73,7 @@
         android:id="@+id/info_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/sub_period_header"
+        app:layout_constraintTop_toBottomOf="@id/info_header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="15dp"
