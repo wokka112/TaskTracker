@@ -21,7 +21,7 @@ class CreateTaskFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val taskCreationViewModel =
-            ViewModelProvider(this).get(TaskCreationViewModel::class.java)
+            ViewModelProvider(this)[TaskCreationViewModel::class.java]
         val view = inflater.inflate(R.layout.fragment_task_creation_create, container)
 
         setupEditTexts(view, taskCreationViewModel)
