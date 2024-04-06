@@ -9,7 +9,7 @@ import com.floatingpanda.tasktracker.data.task.TaskDetails
 import java.util.Calendar
 
 class HomeViewModel : ViewModel() {
-    val records: List<RepeatableTaskRecord>
+    private val records: List<RepeatableTaskRecord>
 
     init {
         val today = Calendar.getInstance()
