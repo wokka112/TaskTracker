@@ -11,65 +11,38 @@ class RepeatableTaskRecord(
     // TODO endDate seems unnecessary, we can calculate that
     private val endDate: Long,
 ) {
-    private val completionsPerDate: MutableMap<String, Int> = HashMap()
-    //TODO should we just add an int to track how many completions in the sub-period?
-
+    private val completionsPerDate: Map<String, Int> = HashMap()
     val isComplete: Boolean
         get() = completionsPerDate.size >= template.timesPerPeriod
-    val title: String
-        get() = template.title
-    val info: String?
-        get() = template.info;
-    val category: String
-        get() = template.category
-
-    fun getTimesLeftForSubPeriod(): Int {
-        var timesLeft = template.timesPerSubPeriod ?: template.timesPerPeriod
-        return timesLeft - getCompletionsForSubPeriod()
-    }
-
-    fun getCompletionsForSubPeriod(): Int {
-        return getCompletionsForPeriod(template.subPeriod ?: template.repeatPeriod)
-    }
 
     fun isCompleteForSubPeriod(): Boolean {
-        if (isComplete)
-            return true
-
         if (template.subPeriod == null)
             return false;
 
-        val timesPerSubPeriod = template.timesPerSubPeriod ?: Int.MAX_VALUE
-
-        return getCompletionsForSubPeriod() >= timesPerSubPeriod
-    }
-
-    fun doTaskOnce() {
-        val today = LocalDate.now()
-        val completionsForToday = completionsPerDate.getOrDefault(today.toString(), 0)
-        completionsPerDate[today.toString()] = completionsForToday + 1
-    }
-
-    private fun getCompletionsForPeriod(period: Period): Int {
-        var earlierDayInPeriod = datesFromStartOfPeriod(period)
+        var earlierDayInSubPeriod = datesFromStartOfSubPeriod()
         val today = LocalDate.now()
 
-        var completionsInPeriod = 0;
+        var completionsInSubPeriod = 0;
         do {
-            completionsInPeriod += completionsPerDate.getOrDefault(today.toString(), 0)
-            earlierDayInPeriod = earlierDayInPeriod.plusDays(1)
-        } while (!earlierDayInPeriod.isAfter(today))
+            completionsInSubPeriod += completionsPerDate[earlierDayInSubPeriod.toString()] ?: 0
+            val timesPerSubPeriod = template.timesPerSubPeriod ?: Int.MAX_VALUE
 
-        return completionsInPeriod
+            if (completionsInSubPeriod >= timesPerSubPeriod)
+                return true
+
+            earlierDayInSubPeriod = earlierDayInSubPeriod.plusDays(1)
+        } while (!earlierDayInSubPeriod.isAfter(today))
+
+        return false
     }
 
-    private fun datesFromStartOfPeriod(period: Period): LocalDate {
-        if (period == Period.WEEKLY) {
+    private fun datesFromStartOfSubPeriod(): LocalDate {
+        if (template.subPeriod == Period.WEEKLY) {
             return LocalDate.now().with(
                 ChronoField.DAY_OF_WEEK,
                 DayOfWeek.MONDAY.getLong(ChronoField.DAY_OF_WEEK)
             )
-        } else if (period == Period.MONTHLY) {
+        } else if (template.subPeriod == Period.MONTHLY) {
             return LocalDate.now().withDayOfMonth(1)
         }
 
