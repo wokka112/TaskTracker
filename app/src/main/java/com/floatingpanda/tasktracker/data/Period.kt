@@ -25,19 +25,4 @@ enum class Period() {
 
         return -1
     }
-
-    companion object {
-        fun convertFromString(str: String): Period {
-            if (YEARLY.toString().uppercase() == str.uppercase())
-                return YEARLY
-
-            if (MONTHLY.toString().uppercase() == str.uppercase())
-                return MONTHLY
-
-            if (WEEKLY.toString().uppercase() == str.uppercase())
-                return WEEKLY
-
-            return DAILY
-        }
-    }
 }

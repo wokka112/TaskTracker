@@ -15,8 +15,6 @@ class TaskCreationViewModel : ViewModel() {
     var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
     var subPeriod: MutableLiveData<Period?> = MutableLiveData(null)
     var timesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
-
-    //TODO switch to set???
     var eligibleDays: MutableLiveData<List<Day>> = MutableLiveData(
         listOf<Day>(
             Day.MONDAY,
@@ -99,13 +97,5 @@ class TaskCreationViewModel : ViewModel() {
 
     fun getEligibleDays(): LiveData<List<Day>> {
         return eligibleDays
-    }
-
-    fun addEligibleDay(day: Day) {
-        // TODO implement
-    }
-
-    fun removeEligibleDay(day: Day) {
-        // TODO implement
     }
 }
