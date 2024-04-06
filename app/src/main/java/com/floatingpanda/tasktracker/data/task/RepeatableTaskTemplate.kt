@@ -16,8 +16,8 @@ data class RepeatableTaskTemplate(
     private val details: TaskDetails,
     val repeatPeriod: Period,
     val timesPerPeriod: Int,
-    val subPeriod: Period?,
-    val timesPerSubPeriod: Int?,
+    val subPeriod: Period,
+    val timesPerSubPeriod: Int,
     val eligibleDays: List<Day>
 ) {
     val title: String

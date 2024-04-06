@@ -8,26 +8,20 @@ import java.time.temporal.ChronoField
 class RepeatableTaskRecord(
     private val template: RepeatableTaskTemplate,
     private val startDate: Long,
-    // TODO endDate seems unnecessary, we can calculate that
     private val endDate: Long,
+    private val completionsPerDate: Map<String, Int>
 ) {
-    private val completionsPerDate: Map<String, Int> = HashMap()
     val isComplete: Boolean
         get() = completionsPerDate.size >= template.timesPerPeriod
 
     fun isCompleteForSubPeriod(): Boolean {
-        if (template.subPeriod == null)
-            return false;
-
         var earlierDayInSubPeriod = datesFromStartOfSubPeriod()
         val today = LocalDate.now()
 
         var completionsInSubPeriod = 0;
         do {
             completionsInSubPeriod += completionsPerDate[earlierDayInSubPeriod.toString()] ?: 0
-            val timesPerSubPeriod = template.timesPerSubPeriod ?: Int.MAX_VALUE
-
-            if (completionsInSubPeriod >= timesPerSubPeriod)
+            if (completionsInSubPeriod >= template.timesPerSubPeriod)
                 return true
 
             earlierDayInSubPeriod = earlierDayInSubPeriod.plusDays(1)
