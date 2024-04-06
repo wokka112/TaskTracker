@@ -9,11 +9,7 @@
         android:id="@+id/nav_home"
         android:name="com.floatingpanda.tasktracker.ui.home.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
-        <action
-            android:id="@+id/action_home_fragment_to_task_creation_create_fragment"
-            app:destination="@id/nav_task_creation_create" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
@@ -26,21 +22,4 @@
         android:name="com.floatingpanda.tasktracker.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
-
-    <fragment
-        android:id="@+id/nav_task_creation_create"
-        android:name="com.floatingpanda.tasktracker.ui.creation.CreateTaskFragment"
-        android:label="Create Task"
-        tools:layout="@layout/fragment_task_creation_create">
-        <action
-            android:id="@+id/action_task_creation_create_fragment_to_task_creation_schedule_fragment"
-            app:destination="@id/nav_task_creation_schedule" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/nav_task_creation_schedule"
-        android:name="com.floatingpanda.tasktracker.ui.creation.ScheduleTaskFragment"
-        android:label="Schedule Task"
-        tools:layout="@layout/fragment_task_creation_schedule" />
-
 </navigation>
