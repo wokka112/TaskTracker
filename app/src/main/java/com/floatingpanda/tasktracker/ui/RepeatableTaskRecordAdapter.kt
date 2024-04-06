@@ -9,12 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 
-// TODO for the completed section we can create 2 adapters and concatenate them.
-//  Add a list of completed records alongside the incomplete records. Then we can add a new adapter
-//  with a header for completed tasks and it can take the completed tasks.
 class RepeatableTaskRecordAdapter(
-    private val incompleteRecords: List<RepeatableTaskRecord>,
-    private val updateRecord: (RepeatableTaskRecord) -> Unit
+    private val records: List<RepeatableTaskRecord>
 ) : RecyclerView.Adapter<RepeatableTaskRecordAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,9 +33,10 @@ class RepeatableTaskRecordAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val record = incompleteRecords.get(position)
+        val record = records.get(position)
 
         holder.taskText.text = record.title
+        holder.completionsLeftSuperScript.text = "HElllooo"
 
         val checkBox = holder.completeCheckBox
         val checkBoxSuperscript = holder.completionsLeftSuperScript
@@ -59,7 +56,7 @@ class RepeatableTaskRecordAdapter(
         checkBox.setOnClickListener { doTaskOnce(record, checkBox, checkBoxSuperscript) }
     }
 
-    override fun getItemCount() = incompleteRecords.size
+    override fun getItemCount() = records.size
 
     private fun doTaskOnce(
         record: RepeatableTaskRecord,
@@ -68,7 +65,6 @@ class RepeatableTaskRecordAdapter(
     ) {
         checkBox.isChecked = true
         record.doTaskOnce()
-        updateRecord(record)
 
         if (!record.isCompleteForSubPeriod()) {
             // TODO make fade over several seconds
