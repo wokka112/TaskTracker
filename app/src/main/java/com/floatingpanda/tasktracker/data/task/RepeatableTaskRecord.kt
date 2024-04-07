@@ -8,9 +8,9 @@ import java.util.Objects
 
 class RepeatableTaskRecord(
     private val template: RepeatableTaskTemplate,
-    private val startDate: Long,
+    private val startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
-    private val endDate: Long,
+    private val endDate: LocalDate,
 ) {
     private val completionsPerDate: MutableMap<String, Int> = HashMap()
     //TODO should we just add an int to track how many completions in the sub-period?
