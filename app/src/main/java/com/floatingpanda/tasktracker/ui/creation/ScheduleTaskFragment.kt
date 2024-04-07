@@ -1,11 +1,13 @@
 package com.floatingpanda.tasktracker.ui.creation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Spinner
@@ -13,9 +15,11 @@ import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
+import com.floatingpanda.tasktracker.ui.home.HomeViewModel
 
 class ScheduleTaskFragment : Fragment() {
     override fun onCreateView(
@@ -23,7 +27,8 @@ class ScheduleTaskFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //TODO check how to make sure the viewmodel is the same as the one from the CreateTaskFragment
+        //TODO check how to make sure the viewmodels are the same as the ones from the other fragments
+        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         val taskCreationViewModel =
             ViewModelProvider(this)[TaskCreationViewModel::class.java]
         val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container)
@@ -31,11 +36,41 @@ class ScheduleTaskFragment : Fragment() {
         setupEditTexts(view, taskCreationViewModel)
         setupSpinners(view, taskCreationViewModel)
         setupEligibleDaysLogic(view, taskCreationViewModel)
+        setupSubPeriodEnabledLogic(view, taskCreationViewModel)
 
-        // TODO add in on click listeners for back and continue buttons
-        //  For now could just create new element when hitting continue
+        view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
+            findNavController().navigateUp()
+        }
+        view.findViewById<Button>(R.id.create_button).setOnClickListener {
+            try {
+                homeViewModel.addRecord(taskCreationViewModel.createTemplate())
+                findNavController().navigate(R.id.nav_home)
+            } catch (e: Exception) {
+                Log.e("task creation", "Error creating task. Template creation failed")
+            }
+        }
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun setupSubPeriodEnabledLogic(
+        rootView: View,
+        taskCreationViewModel: TaskCreationViewModel
+    ) {
+        val subPeriodEnabledCheckBox: CheckBox =
+            rootView.findViewById(R.id.sub_period_enabled_checkbox)
+        val subPeriodSpinner: Spinner = rootView.findViewById(R.id.sub_period_dropdown)
+        val timesPerSubPeriodInput: EditText =
+            rootView.findViewById(R.id.times_per_sub_period_input)
+
+        taskCreationViewModel.isSubPeriodEnabled.observe(this.viewLifecycleOwner) { enabled ->
+            // TODO set to hide instead of enable/disable
+            subPeriodSpinner.isEnabled = enabled
+            timesPerSubPeriodInput.isEnabled = enabled
+        }
+        subPeriodEnabledCheckBox.setOnCheckedChangeListener { _, checked ->
+            taskCreationViewModel.setIsSubPeriodEnabled(checked)
+        }
     }
 
     private fun setupEligibleDaysLogic(
@@ -96,7 +131,7 @@ class ScheduleTaskFragment : Fragment() {
 
     private fun setupSpinners(rootView: View, taskCreationViewModel: TaskCreationViewModel) {
         val periodSpinner: Spinner = rootView.findViewById(R.id.period_dropdown);
-        val subPeriodSpinner: Spinner = rootView.findViewById(R.id.period_dropdown);
+        val subPeriodSpinner: Spinner = rootView.findViewById(R.id.sub_period_dropdown);
 
         ArrayAdapter.createFromResource(
             requireContext(),
@@ -117,13 +152,13 @@ class ScheduleTaskFragment : Fragment() {
         }
 
         taskCreationViewModel.period.observe(this.viewLifecycleOwner) {
-            // Set spinner to be equal to period value
+            // TODO Set spinner to be equal to period value
         }
         periodSpinner.onItemSelectedListener =
             PeriodSpinnerOnItemSelectedListener(taskCreationViewModel)
 
         taskCreationViewModel.subPeriod.observe(this.viewLifecycleOwner) {
-            // Set spinner to be equal to period value
+            // TODO Set spinner to be equal to period value
         }
         subPeriodSpinner.onItemSelectedListener =
             SubPeriodSpinnerOnItemSelectedListener(taskCreationViewModel)

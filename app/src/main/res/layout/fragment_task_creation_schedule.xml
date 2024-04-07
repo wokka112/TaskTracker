@@ -200,7 +200,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/continue_button"
+        android:id="@+id/create_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/days_checkbox_group"
@@ -213,8 +213,8 @@
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/continue_button"
-        app:layout_constraintRight_toLeftOf="@id/continue_button"
+        app:layout_constraintTop_toTopOf="@id/create_button"
+        app:layout_constraintRight_toLeftOf="@id/create_button"
         android:layout_marginRight="10dp"
         android:text="Cancel"
         android:backgroundTint="@android:color/holo_red_dark" />

@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
+import com.floatingpanda.tasktracker.data.task.TaskDetails
+import java.util.stream.Collectors
 
 class TaskCreationViewModel : ViewModel() {
     var title: MutableLiveData<String> = MutableLiveData("")
@@ -16,9 +19,8 @@ class TaskCreationViewModel : ViewModel() {
     var subPeriod: MutableLiveData<Period?> = MutableLiveData(null)
     var timesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
 
-    //TODO switch to set???
-    var eligibleDays: MutableLiveData<List<Day>> = MutableLiveData(
-        listOf<Day>(
+    var eligibleDays: MutableLiveData<Set<Day>> = MutableLiveData(
+        setOf<Day>(
             Day.MONDAY,
             Day.TUESDAY,
             Day.WEDNESDAY,
@@ -28,6 +30,24 @@ class TaskCreationViewModel : ViewModel() {
             Day.SUNDAY
         )
     )
+
+    fun createTemplate(): RepeatableTaskTemplate {
+        if (title.value != null && category.value != null && period.value != null && timesPerPeriod.value != null) {
+            val details = TaskDetails(title.value!!, info.value, category.value!!)
+            return RepeatableTaskTemplate(
+                details,
+                period.value!!,
+                timesPerPeriod.value!!,
+                if (isSubPeriodEnabled.value!!) subPeriod.value else null,
+                if (isSubPeriodEnabled.value!!) timesPerSubPeriod.value else null,
+                eligibleDays.value!!.stream()
+                    .sorted(Comparator.comparing { it.ordinal })
+                    .collect(Collectors.toList())
+            )
+        }
+
+        throw Exception("Unable to create record")
+    }
 
     fun setTitle(title: String) {
         this.title.postValue(title)
@@ -93,19 +113,23 @@ class TaskCreationViewModel : ViewModel() {
         return timesPerSubPeriod
     }
 
-    fun setEligibleDays(days: List<Day>) {
+    fun setEligibleDays(days: Set<Day>) {
         this.eligibleDays.postValue(days)
     }
 
-    fun getEligibleDays(): LiveData<List<Day>> {
+    fun getEligibleDays(): LiveData<Set<Day>> {
         return eligibleDays
     }
 
     fun addEligibleDay(day: Day) {
-        // TODO implement
+        val days: HashSet<Day> = eligibleDays.value as HashSet<Day>
+        days.add(day)
+        setEligibleDays(days)
     }
 
     fun removeEligibleDay(day: Day) {
-        // TODO implement
+        val days: HashSet<Day> = eligibleDays.value as HashSet<Day>
+        days.remove(day)
+        setEligibleDays(days)
     }
 }
