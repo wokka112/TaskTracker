@@ -22,7 +22,7 @@ class CreateTaskFragment : Fragment() {
     ): View? {
         val taskCreationViewModel =
             ViewModelProvider(this)[TaskCreationViewModel::class.java]
-        val view = inflater.inflate(R.layout.fragment_task_creation_create, container)
+        val view = inflater.inflate(R.layout.fragment_task_creation_create, container, false)
 
         setupEditTexts(view, taskCreationViewModel)
 
@@ -33,7 +33,7 @@ class CreateTaskFragment : Fragment() {
             findNavController().navigate(R.id.action_task_creation_create_fragment_to_task_creation_schedule_fragment)
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     private fun setupEditTexts(rootView: View, taskCreationViewModel: TaskCreationViewModel) {
@@ -42,7 +42,8 @@ class CreateTaskFragment : Fragment() {
         val infoInput: EditText = rootView.findViewById(R.id.info_input)
 
         taskCreationViewModel.title.observe(this.viewLifecycleOwner) {
-            titleInput.setText(it, TextView.BufferType.EDITABLE)
+            if (titleInput.text == null || titleInput.text.toString() != it)
+                titleInput.setText(it, TextView.BufferType.EDITABLE)
         }
         titleInput.doAfterTextChanged {
             if (!taskCreationViewModel.title.value.equals(it?.toString()))
@@ -50,7 +51,8 @@ class CreateTaskFragment : Fragment() {
         }
 
         taskCreationViewModel.category.observe(this.viewLifecycleOwner) {
-            categoryInput.setText(it, TextView.BufferType.EDITABLE)
+            if (categoryInput.text == null || categoryInput.text.toString() != it)
+                categoryInput.setText(it, TextView.BufferType.EDITABLE)
         }
         categoryInput.doAfterTextChanged {
             if (!taskCreationViewModel.category.value.equals(it?.toString()))
@@ -58,10 +60,11 @@ class CreateTaskFragment : Fragment() {
         }
 
         taskCreationViewModel.info.observe(this.viewLifecycleOwner) {
-            infoInput.setText(it, TextView.BufferType.EDITABLE)
+            if (infoInput.text == null || infoInput.text.toString() != it)
+                infoInput.setText(it, TextView.BufferType.EDITABLE)
         }
-        categoryInput.doAfterTextChanged {
-            if (!taskCreationViewModel.category.value.equals(it?.toString()))
+        infoInput.doAfterTextChanged {
+            if (!taskCreationViewModel.info.value.equals(it?.toString()))
                 taskCreationViewModel.info.postValue(it.toString())
         }
     }
