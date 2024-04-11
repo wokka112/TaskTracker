@@ -31,7 +31,7 @@ class ScheduleTaskFragment : Fragment() {
         val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         val taskCreationViewModel =
             ViewModelProvider(this)[TaskCreationViewModel::class.java]
-        val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container)
+        val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container, false)
 
         setupEditTexts(view, taskCreationViewModel)
         setupSpinners(view, taskCreationViewModel)
@@ -43,6 +43,8 @@ class ScheduleTaskFragment : Fragment() {
         }
         view.findViewById<Button>(R.id.create_button).setOnClickListener {
             try {
+                //TODO we should not be able to create if sub period is enabled and both sub period and period are set to daily.
+                //TODO this isn't create correctly. Fix it.
                 homeViewModel.addRecord(taskCreationViewModel.createTemplate())
                 findNavController().navigate(R.id.nav_home)
             } catch (e: Exception) {
@@ -50,7 +52,7 @@ class ScheduleTaskFragment : Fragment() {
             }
         }
 
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return view
     }
 
     private fun setupSubPeriodEnabledLogic(
@@ -148,6 +150,7 @@ class ScheduleTaskFragment : Fragment() {
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            //TODO how do we make the adapter only show options up to one below the selected period spinner?
             subPeriodSpinner.adapter = adapter
         }
 
@@ -170,7 +173,10 @@ class ScheduleTaskFragment : Fragment() {
             rootView.findViewById(R.id.times_per_sub_period_input)
 
         taskCreationViewModel.timesPerPeriod.observe(this.viewLifecycleOwner) {
-            timesPerPeriodInput.setText(it, TextView.BufferType.EDITABLE)
+            if (timesPerPeriodInput.text == null || (timesPerPeriodInput.text.toString()
+                    .isNotBlank() && timesPerPeriodInput.text.toString().toInt() == it)
+            )
+                timesPerPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
         }
         timesPerPeriodInput.doAfterTextChanged {
             if (taskCreationViewModel.timesPerPeriod.value != Integer.parseInt(it.toString()))
@@ -178,8 +184,10 @@ class ScheduleTaskFragment : Fragment() {
         }
 
         taskCreationViewModel.timesPerSubPeriod.observe(this.viewLifecycleOwner) {
-            if (it != null)
-                timesPerSubPeriodInput.setText(it, TextView.BufferType.EDITABLE)
+            if (timesPerSubPeriodInput.text == null || (timesPerPeriodInput.text.toString()
+                    .isNotBlank() && timesPerSubPeriodInput.text.toString().toInt() == it)
+            )
+                timesPerSubPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
         }
         timesPerSubPeriodInput.doAfterTextChanged {
             if (taskCreationViewModel.timesPerSubPeriod.value != Integer.parseInt(it.toString()))
