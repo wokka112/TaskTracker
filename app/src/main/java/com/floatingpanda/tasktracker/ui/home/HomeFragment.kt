@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ConcatAdapter
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskRecord
 import com.floatingpanda.tasktracker.databinding.FragmentHomeBinding
 import com.floatingpanda.tasktracker.ui.CompleteTaskAdapter
 import com.floatingpanda.tasktracker.ui.HeaderAdapter
@@ -45,11 +45,11 @@ class HomeFragment : Fragment() {
     }
 
     fun createConcatAdapter(
-        records: List<RepeatableTaskRecord>,
+        records: List<OldRepeatableTaskRecord>,
         homeViewModel: HomeViewModel
     ): ConcatAdapter {
-        val incompleteRecords = ArrayList<RepeatableTaskRecord>()
-        val completeRecords = ArrayList<RepeatableTaskRecord>()
+        val incompleteRecords = ArrayList<OldRepeatableTaskRecord>()
+        val completeRecords = ArrayList<OldRepeatableTaskRecord>()
 
         for (record in records) {
             if (record.isCompleteForSubPeriod())

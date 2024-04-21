@@ -1,87 +1,45 @@
-package com.floatingpanda.tasktracker.data.task
+package com.floatingpanda.tasktracker.data.old
 
 import com.floatingpanda.tasktracker.data.Period
-import io.realm.kotlin.ext.realmDictionaryOf
-import io.realm.kotlin.types.RealmMap
-import io.realm.kotlin.types.RealmObject
-import io.realm.kotlin.types.annotations.PrimaryKey
-import org.mongodb.kbson.BsonObjectId
-import org.mongodb.kbson.ObjectId
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 import java.util.Objects
 
-class RepeatableTaskRecord(
-    var template: RepeatableTaskTemplate?,
-    startDate: LocalDate,
+class OldRepeatableTaskRecord(
+    private val template: OldRepeatableTaskTemplate,
+    private val startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
-    endDate: LocalDate
-) : RealmObject {
-    constructor() : this(
-        null,
-        LocalDate.now(),
-        LocalDate.now()
-    ) // Empty constructor required by Realm
-
-    @PrimaryKey
-    var id: ObjectId = BsonObjectId()
-    var completionsPerDate: RealmMap<String, Int> = realmDictionaryOf()
-    var startDateInternal: String
-    var endDateInternal: String
-    var startDate: LocalDate
-        get() {
-            return LocalDate.parse(startDateInternal)
-        }
-        set(date: LocalDate) {
-            startDateInternal = date.toString()
-        }
-    var endDate: LocalDate
-        get() {
-            return LocalDate.parse(endDateInternal)
-        }
-        set(date: LocalDate) {
-            endDateInternal = date.toString()
-        }
+    private val endDate: LocalDate,
+) {
+    private val completionsPerDate: MutableMap<String, Int> = HashMap()
+    //TODO should we just add an int to track how many completions in the sub-period?
 
     val isComplete: Boolean
-        get() = if (template == null) true else completionsPerDate.size >= template!!.timesPerPeriod
-    val title: String?
-        get() = template?.title
+        get() = completionsPerDate.size >= template.timesPerPeriod
+    val title: String
+        get() = template.title
     val info: String?
-        get() = template?.info;
-    val category: String?
-        get() = template?.category
-
-
-    init {
-        startDateInternal = startDate.toString()
-        endDateInternal = endDate.toString()
-    }
-
+        get() = template.info;
+    val category: String
+        get() = template.category
 
     fun getTimesLeftForSubPeriod(): Int {
-        if (template == null)
-            return -1
-
-        var timesLeft = template!!.timesPerSubPeriod ?: template!!.timesPerPeriod
+        var timesLeft = template.timesPerSubPeriod ?: template.timesPerPeriod
         return timesLeft - getCompletionsForSubPeriod()
     }
 
     fun getCompletionsForSubPeriod(): Int {
-        if (template == null)
-            return -1
-
-        return getCompletionsForPeriod(template!!.subRepeatPeriod ?: template!!.repeatPeriod)
+        return getCompletionsForPeriod(template.subPeriod ?: template.repeatPeriod)
     }
 
     fun isCompleteForSubPeriod(): Boolean {
-        if (isComplete || template == null)
+        if (isComplete)
             return true
 
-        var timesPerSubPeriod = template!!.timesPerSubPeriod
+        var timesPerSubPeriod = template.timesPerSubPeriod
         if (timesPerSubPeriod == null)
-            timesPerSubPeriod = template!!.timesPerPeriod
+            timesPerSubPeriod = template.timesPerPeriod
 
         return getCompletionsForSubPeriod() >= timesPerSubPeriod
     }
@@ -122,7 +80,7 @@ class RepeatableTaskRecord(
         if (other == null)
             return false
 
-        if (other !is RepeatableTaskRecord)
+        if (other !is OldRepeatableTaskRecord)
             return false
 
         return other.template == this.template

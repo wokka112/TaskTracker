@@ -4,11 +4,11 @@ import java.util.Calendar
 
 // TODO expand this to include more periods? What about fortnightly? Quarterly? etc.?
 //   Are quarterly and yearly overkill for now?
-enum class Period() {
-    DAILY,
-    WEEKLY,
-    MONTHLY,
-    YEARLY;
+enum class Period(val value: String) {
+    DAILY("Daily"),
+    WEEKLY("Weekly"),
+    MONTHLY("Monthly"),
+    YEARLY("Yearly");
 
     fun convertToCalendarKey(): Int {
         if (this == DAILY)

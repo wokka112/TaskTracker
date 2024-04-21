@@ -7,10 +7,10 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskRecord
 
 class CompleteTaskAdapter(
-    private val records: List<RepeatableTaskRecord>
+    private val records: List<OldRepeatableTaskRecord>
 ) : RecyclerView.Adapter<CompleteTaskAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskText: TextView

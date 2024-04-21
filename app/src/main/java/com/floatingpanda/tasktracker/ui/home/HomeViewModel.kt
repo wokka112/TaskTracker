@@ -5,25 +5,25 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
-import com.floatingpanda.tasktracker.data.task.TaskDetails
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskTemplate
+import com.floatingpanda.tasktracker.data.old.OldTaskDetails
 import java.time.LocalDate
 import java.util.stream.Collectors
 
 class HomeViewModel : ViewModel() {
-    private val records: MutableLiveData<List<RepeatableTaskRecord>>
+    private val records: MutableLiveData<List<OldRepeatableTaskRecord>>
 
-    fun getRecords(): LiveData<List<RepeatableTaskRecord>> {
+    fun getRecords(): LiveData<List<OldRepeatableTaskRecord>> {
         return records
     }
 
-    fun addRecord(template: RepeatableTaskTemplate) {
+    fun addRecord(template: OldRepeatableTaskTemplate) {
         val newRecords = records.value as ArrayList
         val today = LocalDate.now()
 
         newRecords.add(
-            RepeatableTaskRecord(
+            OldRepeatableTaskRecord(
                 template,
                 today,
                 calculateEndDay(today, template.repeatPeriod)
@@ -81,79 +81,79 @@ class HomeViewModel : ViewModel() {
         )
 
         // a daily record,
-        val wakeUpDetails = TaskDetails("Wake up", null, "none")
+        val wakeUpDetails = OldTaskDetails("Wake up", null, "none")
         val wakeUpTemplate =
-            RepeatableTaskTemplate(wakeUpDetails, Period.DAILY, 1, null, null, days)
+            OldRepeatableTaskTemplate(wakeUpDetails, Period.DAILY, 1, null, null, days)
         val wakeUpRecord =
-            RepeatableTaskRecord(wakeUpTemplate, today, tomorrow)
+            OldRepeatableTaskRecord(wakeUpTemplate, today, tomorrow)
 
         // a daily record with 3 times in period,
-        val stretchDetails = TaskDetails("Stretch", null, "Health")
+        val stretchDetails = OldTaskDetails("Stretch", null, "Health")
         val stretchTemplate =
-            RepeatableTaskTemplate(stretchDetails, Period.DAILY, 3, null, null, days)
+            OldRepeatableTaskTemplate(stretchDetails, Period.DAILY, 3, null, null, days)
         val stretchRecord =
-            RepeatableTaskRecord(stretchTemplate, today, tomorrow)
+            OldRepeatableTaskRecord(stretchTemplate, today, tomorrow)
 
         // a weekly record with once per period,
         val ocdGroupDetails =
-            TaskDetails("Attend OCD group", null, "Health")
+            OldTaskDetails("Attend OCD group", null, "Health")
         val ocdGroupTemplate =
-            RepeatableTaskTemplate(ocdGroupDetails, Period.WEEKLY, 1, null, null, days)
+            OldRepeatableTaskTemplate(ocdGroupDetails, Period.WEEKLY, 1, null, null, days)
         val ocdGroupRecord =
-            RepeatableTaskRecord(ocdGroupTemplate, today, nextWeek)
+            OldRepeatableTaskRecord(ocdGroupTemplate, today, nextWeek)
 
         // a weekly record with 3 times in period and only once daily, but no weekends
-        val runDetails = TaskDetails("Run", null, "Health")
+        val runDetails = OldTaskDetails("Run", null, "Health")
         val runTemplate =
-            RepeatableTaskTemplate(runDetails, Period.WEEKLY, 3, Period.DAILY, 1, weekdays)
+            OldRepeatableTaskTemplate(runDetails, Period.WEEKLY, 3, Period.DAILY, 1, weekdays)
         val runRecord =
-            RepeatableTaskRecord(runTemplate, today, nextWeek)
+            OldRepeatableTaskRecord(runTemplate, today, nextWeek)
 
         // a weekly record with 3 times in period and allowing twice daily,
-        val readDetails = TaskDetails("Read", null, "Leisure")
+        val readDetails = OldTaskDetails("Read", null, "Leisure")
         val readTemplate =
-            RepeatableTaskTemplate(readDetails, Period.WEEKLY, 3, Period.DAILY, 2, days)
+            OldRepeatableTaskTemplate(readDetails, Period.WEEKLY, 3, Period.DAILY, 2, days)
         val readRecord =
-            RepeatableTaskRecord(readTemplate, today, nextWeek)
+            OldRepeatableTaskRecord(readTemplate, today, nextWeek)
 
         // a weekly record with 3 times in period and allowing unlimited times daily
-        val walkDetails = TaskDetails("Walk", null, "Leisure")
-        val walkTemplate = RepeatableTaskTemplate(walkDetails, Period.WEEKLY, 3, null, null, days);
+        val walkDetails = OldTaskDetails("Walk", null, "Leisure")
+        val walkTemplate = OldRepeatableTaskTemplate(walkDetails, Period.WEEKLY, 3, null, null, days);
         val walkRecord =
-            RepeatableTaskRecord(walkTemplate, today, nextWeek)
+            OldRepeatableTaskRecord(walkTemplate, today, nextWeek)
 
         // a monthly record,
         val exploreWildernessDetails =
-            TaskDetails("Explore the wilderness", null, "Leisure")
+            OldTaskDetails("Explore the wilderness", null, "Leisure")
         val exploreWildernessTemplate =
-            RepeatableTaskTemplate(exploreWildernessDetails, Period.MONTHLY, 2, null, null, days)
-        val exploreWildernessRecord = RepeatableTaskRecord(
+            OldRepeatableTaskTemplate(exploreWildernessDetails, Period.MONTHLY, 2, null, null, days)
+        val exploreWildernessRecord = OldRepeatableTaskRecord(
             exploreWildernessTemplate,
             today,
             nextMonth
         )
 
         // a monthly record allowing 2 times per week
-        val rosieDetails = TaskDetails("Do stuff with Rosie", null, "Leisure")
+        val rosieDetails = OldTaskDetails("Do stuff with Rosie", null, "Leisure")
         val rosieTemplate =
-            RepeatableTaskTemplate(rosieDetails, Period.MONTHLY, 4, Period.WEEKLY, 2, days)
+            OldRepeatableTaskTemplate(rosieDetails, Period.MONTHLY, 4, Period.WEEKLY, 2, days)
         val rosieRecord =
-            RepeatableTaskRecord(rosieTemplate, today, nextMonth)
+            OldRepeatableTaskRecord(rosieTemplate, today, nextMonth)
 
         // a yearly record
-        val holidayDetails = TaskDetails("Go on holiday", null, "Leisure");
+        val holidayDetails = OldTaskDetails("Go on holiday", null, "Leisure");
         val holidayTemplate =
-            RepeatableTaskTemplate(holidayDetails, Period.YEARLY, 4, null, null, days)
+            OldRepeatableTaskTemplate(holidayDetails, Period.YEARLY, 4, null, null, days)
         val holidayRecord =
-            RepeatableTaskRecord(holidayTemplate, today, nextYear)
+            OldRepeatableTaskRecord(holidayTemplate, today, nextYear)
 
         // A yearly record allowing 2 times per month,
         val breakFromWorkDetails =
-            TaskDetails("Take a break from work", null, "Leisure")
+            OldTaskDetails("Take a break from work", null, "Leisure")
         val breakFromWorkTemplate =
-            RepeatableTaskTemplate(breakFromWorkDetails, Period.YEARLY, 6, Period.MONTHLY, 2, days)
+            OldRepeatableTaskTemplate(breakFromWorkDetails, Period.YEARLY, 6, Period.MONTHLY, 2, days)
         val breakFromWorkRecord =
-            RepeatableTaskRecord(breakFromWorkTemplate, today, nextYear)
+            OldRepeatableTaskRecord(breakFromWorkTemplate, today, nextYear)
 
         records = MutableLiveData()
         records.value = listOf(
@@ -170,8 +170,8 @@ class HomeViewModel : ViewModel() {
         )
     }
 
-    fun updateRecord(record: RepeatableTaskRecord) {
-        var storedRecords: List<RepeatableTaskRecord>? = records.value
+    fun updateRecord(record: OldRepeatableTaskRecord) {
+        var storedRecords: List<OldRepeatableTaskRecord>? = records.value
 
         if (storedRecords == null)
             return

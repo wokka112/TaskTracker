@@ -7,11 +7,11 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskRecord
 
 class IncompleteTaskAdapter(
-    private val incompleteRecords: List<RepeatableTaskRecord>,
-    private val updateRecord: (RepeatableTaskRecord) -> Unit
+    private val incompleteRecords: List<OldRepeatableTaskRecord>,
+    private val updateRecord: (OldRepeatableTaskRecord) -> Unit
 ) : RecyclerView.Adapter<IncompleteTaskAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskText: TextView
@@ -56,7 +56,7 @@ class IncompleteTaskAdapter(
     override fun getItemCount() = incompleteRecords.size
 
     private fun doTaskOnce(
-        record: RepeatableTaskRecord,
+        record: OldRepeatableTaskRecord,
     ) {
         record.doTaskOnce()
         updateRecord(record)

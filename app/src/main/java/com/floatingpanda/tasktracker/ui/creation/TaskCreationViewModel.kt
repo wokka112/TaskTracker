@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
-import com.floatingpanda.tasktracker.data.task.TaskDetails
+import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskTemplate
+import com.floatingpanda.tasktracker.data.old.OldTaskDetails
 import java.util.stream.Collectors
 
 class TaskCreationViewModel : ViewModel() {
@@ -31,10 +31,10 @@ class TaskCreationViewModel : ViewModel() {
         )
     )
 
-    fun createTemplate(): RepeatableTaskTemplate {
+    fun createTemplate(): OldRepeatableTaskTemplate {
         if (title.value != null && category.value != null && period.value != null && timesPerPeriod.value != null) {
-            val details = TaskDetails(title.value!!, info.value, category.value!!)
-            return RepeatableTaskTemplate(
+            val details = OldTaskDetails(title.value!!, info.value, category.value!!)
+            return OldRepeatableTaskTemplate(
                 details,
                 period.value!!,
                 timesPerPeriod.value!!,
