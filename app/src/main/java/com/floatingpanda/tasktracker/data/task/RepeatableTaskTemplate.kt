@@ -13,11 +13,12 @@ import java.util.Objects
 //  This means that we could start a task on the last day of the week, and it'll refresh immediately
 //  the next day. Should we provide an option to start the record immediately and then refresh it
 //  after the days in the period have passed?
-class RepeatableTaskTemplate() : RealmObject {
+open class RepeatableTaskTemplate() : RealmObject {
     @PrimaryKey
     var id: ObjectId = ObjectId()
     var title: String = ""
     var info: String? = null
+    // TODO should categories be expanded to be a list? So we can have multiple categories per task?
     var category: String = ""
     var details: String? = null
     private var repeatPeriodInternal: String = Period.DAILY.value

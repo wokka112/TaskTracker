@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoField
 import java.util.Objects
 
-class RepeatableTaskRecord(
+open class RepeatableTaskRecord(
     var template: RepeatableTaskTemplate?,
     startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
