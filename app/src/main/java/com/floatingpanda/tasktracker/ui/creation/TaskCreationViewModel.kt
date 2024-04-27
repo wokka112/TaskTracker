@@ -1,15 +1,23 @@
 package com.floatingpanda.tasktracker.ui.creation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskTemplate
-import com.floatingpanda.tasktracker.data.old.OldTaskDetails
-import java.util.stream.Collectors
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
-class TaskCreationViewModel : ViewModel() {
+class TaskCreationViewModel(
+    private val templateRepository: RepeatableTaskTemplateRepository,
+    private val recordRepository: RepeatableTaskRecordRepository
+) : ViewModel() {
     var title: MutableLiveData<String> = MutableLiveData("")
     var category: MutableLiveData<String> = MutableLiveData("")
     var info: MutableLiveData<String> = MutableLiveData("")
@@ -31,22 +39,58 @@ class TaskCreationViewModel : ViewModel() {
         )
     )
 
-    fun createTemplate(): OldRepeatableTaskTemplate {
-        if (title.value != null && category.value != null && period.value != null && timesPerPeriod.value != null) {
-            val details = OldTaskDetails(title.value!!, info.value, category.value!!)
-            return OldRepeatableTaskTemplate(
-                details,
-                period.value!!,
-                timesPerPeriod.value!!,
-                if (isSubPeriodEnabled.value!!) subPeriod.value else null,
-                if (isSubPeriodEnabled.value!!) timesPerSubPeriod.value else null,
-                eligibleDays.value!!.stream()
-                    .sorted(Comparator.comparing { it.ordinal })
-                    .collect(Collectors.toList())
-            )
+    fun createTemplate() {
+        if (title.value == null || title.value!!.isBlank())
+            throw Exception("Title is null or blank")
+
+        if (category.value == null || category.value!!.isBlank())
+            throw Exception("Category is null or blank")
+
+        if (period.value == null)
+            throw Exception("Period is null")
+
+        if (timesPerPeriod.value == null || timesPerPeriod.value!! <= 0)
+            throw Exception("Times per period is null or less than or equals to 0")
+
+        if (info.value == null)
+            Log.e("CreateTemplate", "Info is null")
+
+        if (isSubPeriodEnabled.value == null)
+            Log.e("CreateTemplate", "IsSubPeriodEnabled is null")
+        if (isSubPeriodEnabled.value != null && !isSubPeriodEnabled.value!!)
+            Log.e("CreateTemplate", "IsSubPeriodEnabled is false")
+
+        if (info.value == null)
+            Log.e("CreateTemplate", "Info is null")
+
+        val template = RepeatableTaskTemplate()
+        template.title = title.value!!
+        template.info = info.value
+        template.category = category.value!!
+        template.repeatPeriod = period.value!!
+        template.timesPerPeriod = timesPerPeriod.value!!
+        template.eligibleDays = eligibleDays.value!!
+
+        if (isSubPeriodEnabled.value != null && isSubPeriodEnabled.value!!) {
+            if (subPeriod.value == null)
+                throw Exception("Sub period is enabled but sub period is null")
+
+            if (timesPerSubPeriod.value == null && timesPerSubPeriod.value!! <= 0)
+                throw Exception("Sub period is enabled but times per sub period is null or less than or equal to 0")
+
+            template.subRepeatPeriod = subPeriod.value
+            template.timesPerSubPeriod = timesPerSubPeriod.value
         }
 
-        throw Exception("Unable to create record")
+        viewModelScope.launch {
+            templateRepository.writeTemplate(template)
+
+            //TODO Update date functionality to give actual end date based on period and current date
+            //TODO Do this somewhere else??? Or maybe always create initial one with initial template? Makes sense...
+            val initialRecord =
+                RepeatableTaskRecord(template, LocalDate.now(), LocalDate.now().plusDays(1))
+            recordRepository.writeRecord(initialRecord)
+        }
     }
 
     fun setTitle(title: String) {
