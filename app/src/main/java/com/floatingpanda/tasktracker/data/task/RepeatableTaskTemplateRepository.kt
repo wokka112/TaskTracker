@@ -33,7 +33,6 @@ class RepeatableTaskTemplateRepository(private val realm: Realm) {
             liveTemplate.title = template.title
             liveTemplate.info = template.info
             liveTemplate.category = template.category
-            liveTemplate.details = template.details
             liveTemplate.timesPerPeriod = template.timesPerPeriod
             liveTemplate.timesPerSubPeriod = template.timesPerSubPeriod
             liveTemplate.repeatPeriod = template.repeatPeriod

@@ -2,7 +2,7 @@ package com.floatingpanda.tasktracker.data.task
 
 import com.floatingpanda.tasktracker.data.Period
 import io.realm.kotlin.ext.realmDictionaryOf
-import io.realm.kotlin.types.RealmMap
+import io.realm.kotlin.types.RealmDictionary
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.BsonObjectId
@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoField
 import java.util.Objects
 
-open class RepeatableTaskRecord(
+class RepeatableTaskRecord(
     var template: RepeatableTaskTemplate?,
     startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
@@ -26,7 +26,7 @@ open class RepeatableTaskRecord(
 
     @PrimaryKey
     var id: ObjectId = BsonObjectId()
-    var completionsPerDate: RealmMap<String, Int> = realmDictionaryOf()
+    var completionsPerDate: RealmDictionary<Int> = realmDictionaryOf()
     var startDateInternal: String
     var endDateInternal: String
     var startDate: LocalDate

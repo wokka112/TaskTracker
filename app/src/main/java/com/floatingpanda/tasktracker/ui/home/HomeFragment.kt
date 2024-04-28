@@ -35,8 +35,9 @@ class HomeFragment : Fragment() {
         homeViewModel.getRecords().observe(
             this.viewLifecycleOwner
         ) { records: List<RepeatableTaskRecord> ->
-            recyclerView.adapter =
-                createConcatAdapter(records, homeViewModel)
+            if (records != null && records.isNotEmpty())
+                recyclerView.adapter =
+                    createConcatAdapter(records, homeViewModel)
         }
 
         return root

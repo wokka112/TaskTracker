@@ -7,6 +7,7 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.UpdatePolicy
 import java.time.LocalDate
 
 class MainApplication : Application() {
@@ -20,13 +21,13 @@ class MainApplication : Application() {
 
         val realmConfig = RealmConfiguration.Builder(
             schema = setOf(
-                RepeatableTaskRecord::class,
-                RepeatableTaskTemplate::class
+                RepeatableTaskTemplate::class,
+                RepeatableTaskRecord::class
             )
         ).inMemory()
             .initialData {
-                templates.forEach { copyToRealm(it) }
-                records.forEach { copyToRealm(it) }
+                templates.forEach { copyToRealm(it, UpdatePolicy.ALL) }
+                records.forEach { copyToRealm(it, UpdatePolicy.ALL) }
             }.build()
 
         //TODO do I need to put this in an AppContainer to access it???
