@@ -3,8 +3,15 @@ package com.floatingpanda.tasktracker.ui.creation
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.floatingpanda.tasktracker.MainApplication
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
@@ -14,9 +21,12 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+//TODO how to deal with tasks which are one offs rather than repeating?
+//TODO how to create records when periods change? Would need a polling thing maybe...
 class TaskCreationViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,
-    private val recordRepository: RepeatableTaskRecordRepository
+    private val recordRepository: RepeatableTaskRecordRepository,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var title: MutableLiveData<String> = MutableLiveData("")
     var category: MutableLiveData<String> = MutableLiveData("")
@@ -24,7 +34,7 @@ class TaskCreationViewModel(
     var period: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
     var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(1)
     var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
-    var subPeriod: MutableLiveData<Period?> = MutableLiveData(null)
+    var subPeriod: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
     var timesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
 
     var eligibleDays: MutableLiveData<Set<Day>> = MutableLiveData(
@@ -85,10 +95,14 @@ class TaskCreationViewModel(
         viewModelScope.launch {
             templateRepository.writeTemplate(template)
 
-            //TODO Update date functionality to give actual end date based on period and current date
+            val today = LocalDate.now()
             //TODO Do this somewhere else??? Or maybe always create initial one with initial template? Makes sense...
             val initialRecord =
-                RepeatableTaskRecord(template, LocalDate.now(), LocalDate.now().plusDays(1))
+                RepeatableTaskRecord(
+                    template,
+                    LocalDate.now(),
+                    calculateEndDay(today, template.repeatPeriod)
+                )
             recordRepository.writeRecord(initialRecord)
         }
     }
@@ -175,5 +189,54 @@ class TaskCreationViewModel(
         val days: HashSet<Day> = eligibleDays.value as HashSet<Day>
         days.remove(day)
         setEligibleDays(days)
+    }
+
+    fun hasValidTemplateDetails(): Boolean {
+        return title.value != null && title.value!!.isNotBlank()
+                && category.value != null && category.value!!.isNotBlank()
+    }
+
+    fun hasValidRecordScheduleDetails(): Boolean {
+        val isSubPeriodEnabledAndValid =
+            isSubPeriodEnabled.value!! && timesPerSubPeriod.value != null && timesPerSubPeriod.value!! >= 0
+
+        return timesPerPeriod.value != null && timesPerPeriod.value!! >= 0
+                && eligibleDays.value != null && eligibleDays.value!!.isNotEmpty()
+                && isSubPeriodEnabledAndValid
+    }
+
+    private fun calculateEndDay(today: LocalDate, period: Period): LocalDate {
+        return when (period) {
+            Period.WEEKLY -> {
+                val dayOfWeek = today.dayOfWeek.value
+                today.plusDays((7 - (dayOfWeek - 1)).toLong())
+            }
+
+            Period.MONTHLY -> {
+                today.plusMonths(1).withDayOfMonth(1)
+            }
+
+            Period.YEARLY -> {
+                today.plusYears(1).withDayOfYear(1)
+            }
+
+            else -> {
+                today.plusDays(1)
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                val appContainer = (this[APPLICATION_KEY] as MainApplication).getAppContainer()
+                TaskCreationViewModel(
+                    templateRepository = appContainer.repeatableTaskTemplateRepository,
+                    recordRepository = appContainer.repeatableTaskRecordRepository,
+                    savedStateHandle = savedStateHandle
+                )
+            }
+        }
     }
 }

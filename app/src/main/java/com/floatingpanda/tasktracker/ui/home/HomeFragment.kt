@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
-import com.floatingpanda.tasktracker.data.old.OldRepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.databinding.FragmentHomeBinding
 import com.floatingpanda.tasktracker.ui.CompleteTaskAdapter
 import com.floatingpanda.tasktracker.ui.HeaderAdapter
@@ -20,15 +20,13 @@ class HomeFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private val homeViewModel: HomeViewModel by viewModels<HomeViewModel> { HomeViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -36,7 +34,7 @@ class HomeFragment : Fragment() {
 
         homeViewModel.getRecords().observe(
             this.viewLifecycleOwner
-        ) { records ->
+        ) { records: List<RepeatableTaskRecord> ->
             recyclerView.adapter =
                 createConcatAdapter(records, homeViewModel)
         }
@@ -45,11 +43,11 @@ class HomeFragment : Fragment() {
     }
 
     fun createConcatAdapter(
-        records: List<OldRepeatableTaskRecord>,
+        records: List<RepeatableTaskRecord>,
         homeViewModel: HomeViewModel
     ): ConcatAdapter {
-        val incompleteRecords = ArrayList<OldRepeatableTaskRecord>()
-        val completeRecords = ArrayList<OldRepeatableTaskRecord>()
+        val incompleteRecords = ArrayList<RepeatableTaskRecord>()
+        val completeRecords = ArrayList<RepeatableTaskRecord>()
 
         for (record in records) {
             if (record.isCompleteForSubPeriod())

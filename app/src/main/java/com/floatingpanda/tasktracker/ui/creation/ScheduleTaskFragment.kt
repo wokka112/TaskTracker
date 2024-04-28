@@ -14,24 +14,25 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.ui.home.HomeViewModel
 
 class ScheduleTaskFragment : Fragment() {
+    private val taskCreationViewModel: TaskCreationViewModel by viewModels { TaskCreationViewModel.Factory }
+    
+    private lateinit var createButton: Button
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         //TODO check how to make sure the viewmodels are the same as the ones from the other fragments
-        val homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
-        val taskCreationViewModel =
-            ViewModelProvider(this)[TaskCreationViewModel::class.java]
         val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container, false)
+        createButton = view.findViewById(R.id.create_button)
 
         setupEditTexts(view, taskCreationViewModel)
         setupSpinners(view, taskCreationViewModel)
@@ -41,11 +42,9 @@ class ScheduleTaskFragment : Fragment() {
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             findNavController().navigateUp()
         }
-        view.findViewById<Button>(R.id.create_button).setOnClickListener {
+        createButton.setOnClickListener {
             try {
-                //TODO we should not be able to create if sub period is enabled and both sub period and period are set to daily.
-                //TODO this isn't create correctly. Fix it.
-                homeViewModel.addRecord(taskCreationViewModel.createTemplate())
+                taskCreationViewModel.createTemplate()
                 findNavController().navigate(R.id.nav_home)
             } catch (e: Exception) {
                 Log.e("task creation", "Error creating task. Template creation failed")
@@ -69,10 +68,15 @@ class ScheduleTaskFragment : Fragment() {
             // TODO set to hide instead of enable/disable
             subPeriodSpinner.isEnabled = enabled
             timesPerSubPeriodInput.isEnabled = enabled
+            enableCreateButtonIfParametersValid()
         }
         subPeriodEnabledCheckBox.setOnCheckedChangeListener { _, checked ->
             taskCreationViewModel.setIsSubPeriodEnabled(checked)
         }
+    }
+
+    private fun enableCreateButtonIfParametersValid() {
+        createButton.isEnabled = taskCreationViewModel.hasValidRecordScheduleDetails()
     }
 
     private fun setupEligibleDaysLogic(
@@ -92,42 +96,56 @@ class ScheduleTaskFragment : Fragment() {
                 taskCreationViewModel.addEligibleDay(Day.MONDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.MONDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         tuesdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.TUESDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.TUESDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         wednesdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.WEDNESDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.WEDNESDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         thursdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.THURSDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.THURSDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         fridayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.FRIDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.FRIDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         saturdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.SATURDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.SATURDAY)
+
+            enableCreateButtonIfParametersValid()
         }
         sundayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
                 taskCreationViewModel.addEligibleDay(Day.SUNDAY)
             else
                 taskCreationViewModel.removeEligibleDay(Day.SUNDAY)
+
+            enableCreateButtonIfParametersValid()
         }
     }
 
@@ -156,12 +174,16 @@ class ScheduleTaskFragment : Fragment() {
 
         taskCreationViewModel.period.observe(this.viewLifecycleOwner) {
             // TODO Set spinner to be equal to period value
+
+            enableCreateButtonIfParametersValid()
         }
         periodSpinner.onItemSelectedListener =
             PeriodSpinnerOnItemSelectedListener(taskCreationViewModel)
 
         taskCreationViewModel.subPeriod.observe(this.viewLifecycleOwner) {
             // TODO Set spinner to be equal to period value
+
+            enableCreateButtonIfParametersValid()
         }
         subPeriodSpinner.onItemSelectedListener =
             SubPeriodSpinnerOnItemSelectedListener(taskCreationViewModel)
@@ -175,8 +197,11 @@ class ScheduleTaskFragment : Fragment() {
         taskCreationViewModel.timesPerPeriod.observe(this.viewLifecycleOwner) {
             if (timesPerPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerPeriodInput.text.toString().toInt() == it)
-            )
+            ) {
                 timesPerPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
+
+                enableCreateButtonIfParametersValid()
+            }
         }
         timesPerPeriodInput.doAfterTextChanged {
             if (taskCreationViewModel.timesPerPeriod.value != Integer.parseInt(it.toString()))
@@ -186,8 +211,11 @@ class ScheduleTaskFragment : Fragment() {
         taskCreationViewModel.timesPerSubPeriod.observe(this.viewLifecycleOwner) {
             if (timesPerSubPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerSubPeriodInput.text.toString().toInt() == it)
-            )
+            ) {
                 timesPerSubPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
+
+                enableCreateButtonIfParametersValid()
+            }
         }
         timesPerSubPeriodInput.doAfterTextChanged {
             if (taskCreationViewModel.timesPerSubPeriod.value != Integer.parseInt(it.toString()))

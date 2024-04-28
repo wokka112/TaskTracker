@@ -9,27 +9,29 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 
 class CreateTaskFragment : Fragment() {
+    private val taskCreationViewModel: TaskCreationViewModel by viewModels { TaskCreationViewModel.Factory }
+    
+    private lateinit var continueButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val taskCreationViewModel =
-            ViewModelProvider(this)[TaskCreationViewModel::class.java]
         val view = inflater.inflate(R.layout.fragment_task_creation_create, container, false)
+        continueButton = view.findViewById(R.id.continue_button)
 
         setupEditTexts(view, taskCreationViewModel)
 
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             findNavController().navigateUp()
         }
-        view.findViewById<Button>(R.id.continue_button).setOnClickListener {
+        continueButton.setOnClickListener {
             findNavController().navigate(R.id.action_task_creation_create_fragment_to_task_creation_schedule_fragment)
         }
 
@@ -42,21 +44,27 @@ class CreateTaskFragment : Fragment() {
         val infoInput: EditText = rootView.findViewById(R.id.info_input)
 
         taskCreationViewModel.title.observe(this.viewLifecycleOwner) {
-            if (titleInput.text == null || titleInput.text.toString() != it)
+            if (titleInput.text == null || titleInput.text.toString() != it) {
                 titleInput.setText(it, TextView.BufferType.EDITABLE)
+                enableContinueButtonIfParametersValid()
+            }
         }
         titleInput.doAfterTextChanged {
-            if (!taskCreationViewModel.title.value.equals(it?.toString()))
+            if (!taskCreationViewModel.title.value.equals(it?.toString())) {
                 taskCreationViewModel.title.postValue(it.toString())
+            }
         }
 
         taskCreationViewModel.category.observe(this.viewLifecycleOwner) {
-            if (categoryInput.text == null || categoryInput.text.toString() != it)
+            if (categoryInput.text == null || categoryInput.text.toString() != it) {
                 categoryInput.setText(it, TextView.BufferType.EDITABLE)
+                enableContinueButtonIfParametersValid()
+            }
         }
         categoryInput.doAfterTextChanged {
-            if (!taskCreationViewModel.category.value.equals(it?.toString()))
+            if (!taskCreationViewModel.category.value.equals(it?.toString())) {
                 taskCreationViewModel.category.postValue(it.toString())
+            }
         }
 
         taskCreationViewModel.info.observe(this.viewLifecycleOwner) {
@@ -67,5 +75,9 @@ class CreateTaskFragment : Fragment() {
             if (!taskCreationViewModel.info.value.equals(it?.toString()))
                 taskCreationViewModel.info.postValue(it.toString())
         }
+    }
+
+    private fun enableContinueButtonIfParametersValid() {
+        continueButton.isEnabled = taskCreationViewModel.hasValidTemplateDetails()
     }
 }

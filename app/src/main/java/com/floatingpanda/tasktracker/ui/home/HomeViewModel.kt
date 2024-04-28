@@ -2,8 +2,14 @@ package com.floatingpanda.tasktracker.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.floatingpanda.tasktracker.MainApplication
 import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
@@ -13,7 +19,10 @@ import io.realm.kotlin.notifications.UpdatedResults
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class HomeViewModel(private val recordRepository: RepeatableTaskRecordRepository) :
+class HomeViewModel(
+    private val recordRepository: RepeatableTaskRecordRepository,
+    private val savedStateHandle: SavedStateHandle
+) :
     ViewModel() {
     private val records: MutableLiveData<List<RepeatableTaskRecord>>
 
@@ -46,7 +55,6 @@ class HomeViewModel(private val recordRepository: RepeatableTaskRecordRepository
         viewModelScope.launch { recordRepository.updateRecord(record) }
     }
 
-
     private fun calculateEndDay(today: LocalDate, period: Period): LocalDate {
         return when (period) {
             Period.WEEKLY -> {
@@ -64,6 +72,20 @@ class HomeViewModel(private val recordRepository: RepeatableTaskRecordRepository
 
             else -> {
                 today.plusDays(1)
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                val appContainer =
+                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MainApplication).getAppContainer()
+                HomeViewModel(
+                    recordRepository = appContainer.repeatableTaskRecordRepository,
+                    savedStateHandle = savedStateHandle
+                )
             }
         }
     }
