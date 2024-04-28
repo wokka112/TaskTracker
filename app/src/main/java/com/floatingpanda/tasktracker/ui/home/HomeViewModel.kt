@@ -14,6 +14,7 @@ import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
+import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
 import kotlinx.coroutines.launch
@@ -30,6 +31,10 @@ class HomeViewModel(
         records = MutableLiveData<List<RepeatableTaskRecord>>(listOf())
         recordRepository.observeRecords { changes: ResultsChange<RepeatableTaskRecord> ->
             when (changes) {
+                is InitialResults -> {
+                    records.postValue(changes.list)
+                }
+                
                 is UpdatedResults -> {
                     records.postValue(changes.list)
                 }

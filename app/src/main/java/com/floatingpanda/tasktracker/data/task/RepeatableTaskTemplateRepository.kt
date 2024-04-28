@@ -27,8 +27,8 @@ class RepeatableTaskTemplateRepository(private val realm: Realm) {
         realm.write {
             val liveTemplate = query<RepeatableTaskTemplate>(
                 RepeatableTaskTemplate::class,
-                "_id == $0",
-                template.id.toString()
+                "id == $0",
+                template.id
             ).find().first()
             liveTemplate.title = template.title
             liveTemplate.info = template.info

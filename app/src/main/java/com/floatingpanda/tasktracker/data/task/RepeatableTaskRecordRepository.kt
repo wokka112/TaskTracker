@@ -1,5 +1,6 @@
 package com.floatingpanda.tasktracker.data.task
 
+import android.util.Log
 import io.realm.kotlin.Realm
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.RealmQuery
@@ -21,15 +22,17 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
     }
 
     suspend fun writeRecord(record: RepeatableTaskRecord) {
+        Log.d("WriteRecord", "Writing Record")
         realm.write { copyToRealm(record) }
     }
 
     suspend fun updateRecord(record: RepeatableTaskRecord) {
+        Log.d("UpdateRecord", "Updating Record")
         realm.write {
             val liveRecord = query<RepeatableTaskRecord>(
                 RepeatableTaskRecord::class,
-                "_id == $0",
-                record.id.toString()
+                "id == $0",
+                record.id
             ).find().first()
             liveRecord.template = record.template
             liveRecord.startDate = record.startDate

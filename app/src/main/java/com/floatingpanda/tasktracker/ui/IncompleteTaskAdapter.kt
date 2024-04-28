@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import io.realm.kotlin.ext.copyFromRealm
 
 class IncompleteTaskAdapter(
     private val incompleteRecords: List<RepeatableTaskRecord>,
@@ -58,7 +59,10 @@ class IncompleteTaskAdapter(
     private fun doTaskOnce(
         record: RepeatableTaskRecord,
     ) {
-        record.doTaskOnce()
-        updateRecord(record)
+        //TODO is this the best way to do this??
+        val copy = record.copyFromRealm()
+        copy.id = record.id
+        copy.doTaskOnce()
+        updateRecord(copy)
     }
 }

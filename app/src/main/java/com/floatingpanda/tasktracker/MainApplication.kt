@@ -1,6 +1,7 @@
 package com.floatingpanda.tasktracker
 
 import android.app.Application
+import android.util.Log
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
@@ -15,6 +16,7 @@ class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("onCreate", "Creating main application")
 
         val templates = createTestTemplates()
         val records = createTestRecords(templates)
