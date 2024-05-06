@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.floatingpanda.tasktracker.MainApplication
+import com.floatingpanda.tasktracker.RealmHelper
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
@@ -26,6 +27,7 @@ import java.time.LocalDate
 class TaskCreationViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,
     private val recordRepository: RepeatableTaskRecordRepository,
+    private val realmHelper: RealmHelper,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var title: MutableLiveData<String> = MutableLiveData("")
@@ -93,17 +95,18 @@ class TaskCreationViewModel(
         }
 
         viewModelScope.launch {
-            templateRepository.writeTemplate(template)
-
-            val today = LocalDate.now()
-            //TODO Do this somewhere else??? Or maybe always create initial one with initial template? Makes sense...
-            val initialRecord =
-                RepeatableTaskRecord(
-                    template,
-                    LocalDate.now(),
-                    calculateEndDay(today, template.repeatPeriod)
-                )
-            recordRepository.writeRecord(initialRecord)
+            realmHelper.writeTransaction {
+                val savedTemplate = templateRepository.writeTemplate(this, template)
+                val today = LocalDate.now()
+                //TODO Do this somewhere else??? Or maybe always create initial one with initial template? Makes sense...
+                val initialRecord =
+                    RepeatableTaskRecord(
+                        savedTemplate,
+                        LocalDate.now(),
+                        calculateEndDay(today, template.repeatPeriod)
+                    )
+                recordRepository.writeRecord(this, initialRecord)
+            }
         }
     }
 
@@ -234,6 +237,7 @@ class TaskCreationViewModel(
                 TaskCreationViewModel(
                     templateRepository = appContainer.repeatableTaskTemplateRepository,
                     recordRepository = appContainer.repeatableTaskRecordRepository,
+                    realmHelper = appContainer.realmHelper,
                     savedStateHandle = savedStateHandle
                 )
             }

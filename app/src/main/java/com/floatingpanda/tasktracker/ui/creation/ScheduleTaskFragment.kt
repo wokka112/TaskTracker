@@ -14,15 +14,15 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
 
 class ScheduleTaskFragment : Fragment() {
-    private val taskCreationViewModel: TaskCreationViewModel by viewModels { TaskCreationViewModel.Factory }
-    
+    private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
+
     private lateinit var createButton: Button
 
     override fun onCreateView(
@@ -30,7 +30,6 @@ class ScheduleTaskFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //TODO check how to make sure the viewmodels are the same as the ones from the other fragments
         val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container, false)
         createButton = view.findViewById(R.id.create_button)
 

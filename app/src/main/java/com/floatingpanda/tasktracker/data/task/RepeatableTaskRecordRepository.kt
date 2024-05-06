@@ -1,6 +1,7 @@
 package com.floatingpanda.tasktracker.data.task
 
 import android.util.Log
+import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.Realm
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.RealmQuery
@@ -21,9 +22,9 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
         }
     }
 
-    suspend fun writeRecord(record: RepeatableTaskRecord) {
+    fun writeRecord(writer: MutableRealm, record: RepeatableTaskRecord): RepeatableTaskRecord {
         Log.d("WriteRecord", "Writing Record")
-        realm.write { copyToRealm(record) }
+        return writer.copyToRealm(record)
     }
 
     suspend fun updateRecord(record: RepeatableTaskRecord) {

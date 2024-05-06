@@ -9,4 +9,5 @@ class AppContainer(realm: Realm) {
         RepeatableTaskRecordRepository(realm)
     val repeatableTaskTemplateRepository: RepeatableTaskTemplateRepository =
         RepeatableTaskTemplateRepository(realm)
+    val realmHelper: RealmHelper = RealmHelper(realm)
 }

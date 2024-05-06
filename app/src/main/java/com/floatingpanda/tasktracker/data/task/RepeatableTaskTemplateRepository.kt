@@ -1,5 +1,8 @@
 package com.floatingpanda.tasktracker.data.task
 
+import android.util.Log
+import com.floatingpanda.tasktracker.data.Period
+import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.Realm
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.RealmQuery
@@ -7,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class RepeatableTaskTemplateRepository(private val realm: Realm) {
     fun getTemplates(): RealmQuery<RepeatableTaskTemplate> {
@@ -19,9 +23,35 @@ class RepeatableTaskTemplateRepository(private val realm: Realm) {
         }
     }
 
-    suspend fun writeTemplate(template: RepeatableTaskTemplate) {
-        realm.write { copyToRealm(template) }
+    fun writeTemplate(
+        writer: MutableRealm,
+        template: RepeatableTaskTemplate
+    ): RepeatableTaskTemplate {
+        Log.d("WriteTemplate", "Writing Template")
+        return writer.copyToRealm(template)
     }
+
+    private fun calculateEndDay(today: LocalDate, period: Period): LocalDate {
+        return when (period) {
+            Period.WEEKLY -> {
+                val dayOfWeek = today.dayOfWeek.value
+                today.plusDays((7 - (dayOfWeek - 1)).toLong())
+            }
+
+            Period.MONTHLY -> {
+                today.plusMonths(1).withDayOfMonth(1)
+            }
+
+            Period.YEARLY -> {
+                today.plusYears(1).withDayOfYear(1)
+            }
+
+            else -> {
+                today.plusDays(1)
+            }
+        }
+    }
+
 
     suspend fun updateTemplate(template: RepeatableTaskTemplate) {
         realm.write {
