@@ -108,6 +108,29 @@ class TaskCreationViewModel(
                 recordRepository.writeRecord(this, initialRecord)
             }
         }
+        clearVariables()
+    }
+
+    private fun clearVariables() {
+        title.postValue("")
+        category.postValue("")
+        info.postValue("")
+        period.postValue(Period.DAILY)
+        timesPerPeriod.postValue(0)
+        isSubPeriodEnabled.postValue(false)
+        subPeriod.postValue(Period.DAILY)
+        timesPerSubPeriod.postValue(null)
+        eligibleDays.postValue(
+            setOf<Day>(
+                Day.MONDAY,
+                Day.TUESDAY,
+                Day.WEDNESDAY,
+                Day.THURSDAY,
+                Day.FRIDAY,
+                Day.SATURDAY,
+                Day.SUNDAY
+            )
+        )
     }
 
     fun setTitle(title: String) {
