@@ -64,7 +64,7 @@ class RepeatableTaskTemplateRepository(private val realm: Realm) {
             liveTemplate.info = template.info
             liveTemplate.category = template.category
             liveTemplate.timesPerPeriod = template.timesPerPeriod
-            liveTemplate.timesPerSubPeriod = template.timesPerSubPeriod
+            liveTemplate.maxTimesPerSubPeriod = template.maxTimesPerSubPeriod
             liveTemplate.repeatPeriod = template.repeatPeriod
             liveTemplate.subRepeatPeriod = template.subRepeatPeriod
             liveTemplate.eligibleDays = template.eligibleDays

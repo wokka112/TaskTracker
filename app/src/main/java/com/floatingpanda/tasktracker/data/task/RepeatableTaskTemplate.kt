@@ -24,7 +24,7 @@ class RepeatableTaskTemplate() : RealmObject {
     private var repeatPeriodInternal: String = Period.DAILY.value
     var timesPerPeriod: Int = 1
     private var subRepeatPeriodInternal: String? = null
-    var timesPerSubPeriod: Int? = null
+    var maxTimesPerSubPeriod: Int? = null
     private var eligibleDaysInternal: RealmSet<String> = realmSetOf(
         Day.SUNDAY.day,
         Day.MONDAY.day,
@@ -79,7 +79,7 @@ class RepeatableTaskTemplate() : RealmObject {
                 && other.repeatPeriod == this.repeatPeriod
                 && other.timesPerPeriod == this.timesPerPeriod
                 && other.subRepeatPeriod == this.subRepeatPeriod
-                && other.timesPerSubPeriod == this.timesPerSubPeriod
+                && other.maxTimesPerSubPeriod == this.maxTimesPerSubPeriod
                 && other.eligibleDays == this.eligibleDays
     }
 
@@ -92,7 +92,7 @@ class RepeatableTaskTemplate() : RealmObject {
             repeatPeriodInternal,
             timesPerPeriod,
             subRepeatPeriodInternal,
-            timesPerSubPeriod,
+            maxTimesPerSubPeriod,
             eligibleDaysInternal
         )
     }

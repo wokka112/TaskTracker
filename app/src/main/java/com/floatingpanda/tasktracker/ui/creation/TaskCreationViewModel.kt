@@ -30,16 +30,18 @@ class TaskCreationViewModel(
     private val realmHelper: RealmHelper,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    var title: MutableLiveData<String> = MutableLiveData("")
-    var category: MutableLiveData<String> = MutableLiveData("")
-    var info: MutableLiveData<String> = MutableLiveData("")
-    var period: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
-    var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(1)
-    var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
-    var subPeriod: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
-    var timesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
+    private var title: MutableLiveData<String> = MutableLiveData("")
+    private var category: MutableLiveData<String> = MutableLiveData("")
+    private var info: MutableLiveData<String> = MutableLiveData("")
+    private var period: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
+    private var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(1)
+    private var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
+    private var subPeriod: MutableLiveData<Period> = MutableLiveData(Period.NONE)
+    private var maxTimesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
 
-    var eligibleDays: MutableLiveData<Set<Day>> = MutableLiveData(
+    private var validSubPeriods: MutableLiveData<List<Period>> =
+        MutableLiveData(Period.getValidSubPeriods(Period.DAILY))
+    private var eligibleDays: MutableLiveData<Set<Day>> = MutableLiveData(
         setOf<Day>(
             Day.MONDAY,
             Day.TUESDAY,
@@ -50,6 +52,8 @@ class TaskCreationViewModel(
             Day.SUNDAY
         )
     )
+
+    val validPeriods: List<Period> = Period.entries.filter { p -> p != Period.NONE }
 
     fun createTemplate() {
         if (title.value == null || title.value!!.isBlank())
@@ -87,11 +91,11 @@ class TaskCreationViewModel(
             if (subPeriod.value == null)
                 throw Exception("Sub period is enabled but sub period is null")
 
-            if (timesPerSubPeriod.value == null && timesPerSubPeriod.value!! <= 0)
+            if (maxTimesPerSubPeriod.value == null && maxTimesPerSubPeriod.value!! <= 0)
                 throw Exception("Sub period is enabled but times per sub period is null or less than or equal to 0")
 
             template.subRepeatPeriod = subPeriod.value
-            template.timesPerSubPeriod = timesPerSubPeriod.value
+            template.maxTimesPerSubPeriod = maxTimesPerSubPeriod.value
         }
 
         viewModelScope.launch {
@@ -119,7 +123,7 @@ class TaskCreationViewModel(
         timesPerPeriod.postValue(0)
         isSubPeriodEnabled.postValue(false)
         subPeriod.postValue(Period.DAILY)
-        timesPerSubPeriod.postValue(null)
+        maxTimesPerSubPeriod.postValue(null)
         eligibleDays.postValue(
             setOf<Day>(
                 Day.MONDAY,
@@ -159,6 +163,14 @@ class TaskCreationViewModel(
 
     fun setPeriod(period: Period) {
         this.period.postValue(period)
+        this.validSubPeriods.postValue(Period.getValidSubPeriods(period))
+
+        if (subPeriod.value != null
+            && (subPeriod.value!! == period
+                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period))
+        ) {
+            subPeriod.postValue(Period.NONE)
+        }
     }
 
     fun getPeriod(): LiveData<Period> {
@@ -182,19 +194,27 @@ class TaskCreationViewModel(
     }
 
     fun setSubPeriod(subPeriod: Period?) {
-        this.subPeriod.postValue(subPeriod)
+        if (subPeriod != null && Period.isPeriodGreaterThanOtherPeriod(subPeriod, period.value!!)) {
+            Log.d(
+                "setSubPeriod",
+                "Attempted to set sub period greater than period: " + subPeriod + " - " + period.value + ". Setting to NONE instead"
+            )
+            this.subPeriod.postValue(Period.NONE)
+        } else {
+            this.subPeriod.postValue(subPeriod)
+        }
     }
 
     fun getSubPeriod(): LiveData<Period?> {
         return subPeriod
     }
 
-    fun setTimesPerSubPeriod(timesPerSubPeriod: Int?) {
-        this.timesPerSubPeriod.postValue(timesPerSubPeriod)
+    fun setMaxTimesPerSubPeriod(maxTimesPerSubPeriod: Int?) {
+        this.maxTimesPerSubPeriod.postValue(maxTimesPerSubPeriod)
     }
 
-    fun getTimesPerSubPeriod(): LiveData<Int?> {
-        return timesPerSubPeriod
+    fun getMaxTimesPerSubPeriod(): LiveData<Int?> {
+        return maxTimesPerSubPeriod
     }
 
     fun setEligibleDays(days: Set<Day>) {
@@ -217,18 +237,58 @@ class TaskCreationViewModel(
         setEligibleDays(days)
     }
 
+    fun getValidSubPeriods(): LiveData<List<Period>> {
+        return validSubPeriods
+    }
+
     fun hasValidTemplateDetails(): Boolean {
-        return title.value != null && title.value!!.isNotBlank()
-                && category.value != null && category.value!!.isNotBlank()
+        val METHOD_NAME = "hasValidTemplateDetails"
+        val LOG_PREFIX = "Template details invalid - "
+
+        if (title.value.isNullOrBlank()) {
+            Log.d(METHOD_NAME, LOG_PREFIX + " title is invalid")
+            return false
+        }
+
+        if (category.value.isNullOrBlank()) {
+            Log.d(METHOD_NAME, LOG_PREFIX + " category is invalid")
+            return false
+        }
+        return true
     }
 
     fun hasValidRecordScheduleDetails(): Boolean {
-        val isSubPeriodEnabledAndValid =
-            isSubPeriodEnabled.value!! && timesPerSubPeriod.value != null && timesPerSubPeriod.value!! >= 0
+        val METHOD_NAME = "hasValidRecordScheduleDetails"
+        val LOG_PREFIX = "Record schedule details invalid - "
 
-        return timesPerPeriod.value != null && timesPerPeriod.value!! >= 0
-                && eligibleDays.value != null && eligibleDays.value!!.isNotEmpty()
-                && isSubPeriodEnabledAndValid
+        if (isSubPeriodEnabled.value!!) {
+            if (maxTimesPerSubPeriod.value == null || maxTimesPerSubPeriod.value!! <= 0 || maxTimesPerSubPeriod.value!! > timesPerPeriod.value!!) {
+                Log.d(
+                    METHOD_NAME,
+                    LOG_PREFIX + "sub period enabled but max times per sub period is invalid"
+                )
+            }
+
+            if (subPeriod.value == Period.NONE)
+                Log.d(
+                    METHOD_NAME,
+                    LOG_PREFIX + "sub period is set to NONE which is invalid"
+                )
+
+            return false
+        }
+
+        if (timesPerPeriod.value == null || timesPerPeriod.value!! <= 0) {
+            Log.d(METHOD_NAME, LOG_PREFIX + "times per period invalid")
+            return false
+        }
+
+        if (eligibleDays.value.isNullOrEmpty()) {
+            Log.d(METHOD_NAME, LOG_PREFIX + "eligible days invalid")
+            return false
+        }
+
+        return true
     }
 
     private fun calculateEndDay(today: LocalDate, period: Period): LocalDate {

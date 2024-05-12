@@ -43,37 +43,37 @@ class CreateTaskFragment : Fragment() {
         val categoryInput: EditText = rootView.findViewById(R.id.category_input)
         val infoInput: EditText = rootView.findViewById(R.id.info_input)
 
-        taskCreationViewModel.title.observe(this.viewLifecycleOwner) {
+        taskCreationViewModel.getTitle().observe(this.viewLifecycleOwner) {
             if (titleInput.text == null || titleInput.text.toString() != it) {
                 titleInput.setText(it, TextView.BufferType.EDITABLE)
                 enableContinueButtonIfParametersValid()
             }
         }
         titleInput.doAfterTextChanged {
-            if (!taskCreationViewModel.title.value.equals(it?.toString())) {
-                taskCreationViewModel.title.postValue(it.toString())
+            if (!taskCreationViewModel.getTitle().value.equals(it?.toString())) {
+                taskCreationViewModel.setTitle(it.toString())
             }
         }
 
-        taskCreationViewModel.category.observe(this.viewLifecycleOwner) {
+        taskCreationViewModel.getCategory().observe(this.viewLifecycleOwner) {
             if (categoryInput.text == null || categoryInput.text.toString() != it) {
                 categoryInput.setText(it, TextView.BufferType.EDITABLE)
                 enableContinueButtonIfParametersValid()
             }
         }
         categoryInput.doAfterTextChanged {
-            if (!taskCreationViewModel.category.value.equals(it?.toString())) {
-                taskCreationViewModel.category.postValue(it.toString())
+            if (!taskCreationViewModel.getCategory().value.equals(it?.toString())) {
+                taskCreationViewModel.setCategory(it.toString())
             }
         }
 
-        taskCreationViewModel.info.observe(this.viewLifecycleOwner) {
+        taskCreationViewModel.getInfo().observe(this.viewLifecycleOwner) {
             if (infoInput.text == null || infoInput.text.toString() != it)
                 infoInput.setText(it, TextView.BufferType.EDITABLE)
         }
         infoInput.doAfterTextChanged {
-            if (!taskCreationViewModel.info.value.equals(it?.toString()))
-                taskCreationViewModel.info.postValue(it.toString())
+            if (!taskCreationViewModel.getInfo().value.equals(it?.toString()))
+                taskCreationViewModel.setInfo(it.toString())
         }
     }
 

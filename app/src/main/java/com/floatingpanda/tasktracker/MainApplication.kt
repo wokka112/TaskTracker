@@ -146,7 +146,7 @@ class MainApplication : Application() {
         runTemplate.repeatPeriod = Period.WEEKLY
         runTemplate.timesPerPeriod = 3
         runTemplate.subRepeatPeriod = Period.DAILY
-        runTemplate.timesPerSubPeriod = 1
+        runTemplate.maxTimesPerSubPeriod = 1
         runTemplate.eligibleDays = weekdays
 
         // a weekly record with 3 times in period and allowing twice daily,
@@ -156,7 +156,7 @@ class MainApplication : Application() {
         readTemplate.repeatPeriod = Period.WEEKLY
         readTemplate.timesPerPeriod = 3
         readTemplate.subRepeatPeriod = Period.DAILY
-        readTemplate.timesPerSubPeriod = 2
+        readTemplate.maxTimesPerSubPeriod = 2
         readTemplate.eligibleDays = days
 
         // a weekly record with 3 times in period and allowing unlimited times daily
@@ -182,7 +182,7 @@ class MainApplication : Application() {
         rosieTemplate.repeatPeriod = Period.MONTHLY
         rosieTemplate.timesPerPeriod = 4
         rosieTemplate.subRepeatPeriod = Period.WEEKLY
-        rosieTemplate.timesPerSubPeriod = 2
+        rosieTemplate.maxTimesPerSubPeriod = 2
         rosieTemplate.eligibleDays = days
 
         // a yearly record
@@ -200,7 +200,7 @@ class MainApplication : Application() {
         breakFromWorkTemplate.repeatPeriod = Period.YEARLY
         breakFromWorkTemplate.timesPerPeriod = 6
         breakFromWorkTemplate.subRepeatPeriod = Period.MONTHLY
-        breakFromWorkTemplate.timesPerSubPeriod = 2
+        breakFromWorkTemplate.maxTimesPerSubPeriod = 2
         breakFromWorkTemplate.eligibleDays = days
 
         return listOf(

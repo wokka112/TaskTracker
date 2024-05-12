@@ -1,10 +1,12 @@
 package com.floatingpanda.tasktracker.data
 
 import java.util.Calendar
+import java.util.stream.Collectors
 
 // TODO expand this to include more periods? What about fortnightly? Quarterly? etc.?
 //   Are quarterly and yearly overkill for now?
 enum class Period(val value: String) {
+    NONE("None"),
     DAILY("Daily"),
     WEEKLY("Weekly"),
     MONTHLY("Monthly"),
@@ -27,6 +29,16 @@ enum class Period(val value: String) {
     }
 
     companion object {
+        fun getValidSubPeriods(period: Period): List<Period> {
+            return entries.stream()
+                .filter { entry -> entry.ordinal < period.ordinal }
+                .collect(Collectors.toList())
+        }
+
+        fun isPeriodGreaterThanOtherPeriod(period: Period, otherPeriod: Period): Boolean {
+            return period.ordinal > otherPeriod.ordinal
+        }
+
         fun convertFromString(str: String): Period {
             if (YEARLY.toString().uppercase() == str.uppercase())
                 return YEARLY

@@ -64,7 +64,7 @@ class RepeatableTaskRecord(
         if (template == null)
             return -1
 
-        var timesLeft = template!!.timesPerSubPeriod ?: template!!.timesPerPeriod
+        var timesLeft = template!!.maxTimesPerSubPeriod ?: template!!.timesPerPeriod
         return timesLeft - getCompletionsForSubPeriod()
     }
 
@@ -79,7 +79,7 @@ class RepeatableTaskRecord(
         if (isComplete || template == null)
             return true
 
-        var timesPerSubPeriod = template!!.timesPerSubPeriod
+        var timesPerSubPeriod = template!!.maxTimesPerSubPeriod
         if (timesPerSubPeriod == null)
             timesPerSubPeriod = template!!.timesPerPeriod
 

@@ -90,37 +90,40 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp" />
+        android:layout_marginRight="15dp"
+        android:visibility="gone" />
 
     <TextView
-        android:id="@+id/times_per_sub_period_header"
+        android:id="@+id/max_times_per_sub_period_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="@id/period_header"
         app:layout_constraintTop_toBottomOf="@id/sub_period_dropdown"
         android:layout_marginTop="10dp"
         android:text="Times Per Sub Period"
-        android:textSize="24dp" />
+        android:textSize="24dp"
+        android:visibility="gone" />
 
     <EditText
-        android:id="@+id/times_per_sub_period_input"
+        android:id="@+id/max_times_per_sub_period_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/times_per_sub_period_header"
+        app:layout_constraintTop_toBottomOf="@id/max_times_per_sub_period_header"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:hint="Enter times per sub period..."
         android:gravity="right"
-        android:inputType="number" />
+        android:inputType="number"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/days_checkbox_group_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="@id/period_header"
-        app:layout_constraintTop_toBottomOf="@id/times_per_sub_period_input"
+        app:layout_constraintTop_toBottomOf="@id/max_times_per_sub_period_input"
         android:layout_marginTop="10dp"
         android:text="Eligible Days"
         android:textSize="24dp" />
@@ -207,7 +210,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
-        android:text="Continue" />
+        android:text="Create" />
 
     <Button
         android:id="@+id/cancel_button"
