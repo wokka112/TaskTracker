@@ -49,7 +49,10 @@ enum class Period(val value: String) {
             if (WEEKLY.toString().uppercase() == str.uppercase())
                 return WEEKLY
 
-            return DAILY
+            if (DAILY.toString().uppercase() == str.uppercase())
+                return DAILY
+
+            return NONE
         }
     }
 }

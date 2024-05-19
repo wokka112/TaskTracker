@@ -172,6 +172,8 @@ class ScheduleTaskFragment : Fragment() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             subPeriodSpinner.adapter = adapter
         }
+        //TODO this is resetting the spinner to DAILY which is then updating the sub period to DAILY every time. Need to change it.
+        // Maybe either access the inner adapter and add/remove from it or remove the listener and set it on after updating it
         taskCreationViewModel.getValidSubPeriods().observe(this.viewLifecycleOwner) {
             subPeriodAdapter = ArrayAdapter<String>(
                 requireContext(),

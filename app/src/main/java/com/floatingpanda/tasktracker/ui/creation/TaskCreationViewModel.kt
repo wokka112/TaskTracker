@@ -21,6 +21,7 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.util.stream.Collectors
 
 //TODO how to deal with tasks which are one offs rather than repeating?
 //TODO how to create records when periods change? Would need a polling thing maybe...
@@ -163,14 +164,19 @@ class TaskCreationViewModel(
 
     fun setPeriod(period: Period) {
         this.period.postValue(period)
-        this.validSubPeriods.postValue(Period.getValidSubPeriods(period))
+
+        var validPeriods = Period.getValidSubPeriods(period)
+        if (validPeriods.size > 1)
+            validPeriods = validPeriods.stream().filter { period -> period != Period.NONE }.collect(
+                Collectors.toList()
+            )
+        this.validSubPeriods.postValue(validPeriods)
 
         if (subPeriod.value != null
             && (subPeriod.value!! == period
-                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period))
-        ) {
+                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period)))
             subPeriod.postValue(Period.NONE)
-        }
+
     }
 
     fun getPeriod(): LiveData<Period> {
@@ -195,10 +201,6 @@ class TaskCreationViewModel(
 
     fun setSubPeriod(subPeriod: Period?) {
         if (subPeriod != null && Period.isPeriodGreaterThanOtherPeriod(subPeriod, period.value!!)) {
-            Log.d(
-                "setSubPeriod",
-                "Attempted to set sub period greater than period: " + subPeriod + " - " + period.value + ". Setting to NONE instead"
-            )
             this.subPeriod.postValue(Period.NONE)
         } else {
             this.subPeriod.postValue(subPeriod)
