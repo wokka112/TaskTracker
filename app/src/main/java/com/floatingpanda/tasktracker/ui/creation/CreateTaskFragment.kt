@@ -46,8 +46,8 @@ class CreateTaskFragment : Fragment() {
         taskCreationViewModel.getTitle().observe(this.viewLifecycleOwner) {
             if (titleInput.text == null || titleInput.text.toString() != it) {
                 titleInput.setText(it, TextView.BufferType.EDITABLE)
-                enableContinueButtonIfParametersValid()
             }
+            enableContinueButtonIfParametersValid()
         }
         titleInput.doAfterTextChanged {
             if (!taskCreationViewModel.getTitle().value.equals(it?.toString())) {
@@ -58,8 +58,8 @@ class CreateTaskFragment : Fragment() {
         taskCreationViewModel.getCategory().observe(this.viewLifecycleOwner) {
             if (categoryInput.text == null || categoryInput.text.toString() != it) {
                 categoryInput.setText(it, TextView.BufferType.EDITABLE)
-                enableContinueButtonIfParametersValid()
             }
+            enableContinueButtonIfParametersValid()
         }
         categoryInput.doAfterTextChanged {
             if (!taskCreationViewModel.getCategory().value.equals(it?.toString())) {

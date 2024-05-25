@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui
+package com.floatingpanda.tasktracker.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View

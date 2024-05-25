@@ -19,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
+import com.floatingpanda.tasktracker.ui.adapters.ValidPeriodAdapter
 import java.util.stream.Collectors
 
 class ScheduleTaskFragment : Fragment() {
@@ -63,6 +64,7 @@ class ScheduleTaskFragment : Fragment() {
         val timesPerSubPeriodInput: EditText =
             rootView.findViewById(R.id.max_times_per_sub_period_input)
 
+
         taskCreationViewModel.getIsSubPeriodEnabled().observe(this.viewLifecycleOwner) { enabled ->
             subPeriodSpinner.visibility = if (enabled) View.VISIBLE else View.GONE
             subPeriodSpinner.isEnabled = enabled
@@ -70,8 +72,18 @@ class ScheduleTaskFragment : Fragment() {
             timesPerSubPeriodInput.isEnabled = enabled
             enableCreateButtonIfParametersValid()
         }
+
         subPeriodEnabledCheckBox.setOnCheckedChangeListener { _, checked ->
             taskCreationViewModel.setIsSubPeriodEnabled(checked)
+        }
+
+        taskCreationViewModel.getPeriod().observe(this.viewLifecycleOwner) { period ->
+            if (period == Period.DAILY) {
+                subPeriodEnabledCheckBox.isChecked = false
+                subPeriodEnabledCheckBox.isEnabled = false
+            } else {
+                subPeriodEnabledCheckBox.isEnabled = true
+            }
         }
     }
 
@@ -156,7 +168,7 @@ class ScheduleTaskFragment : Fragment() {
         val periodAdapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            taskCreationViewModel.validPeriods.stream().map(Period::value).collect(
+            taskCreationViewModel.getValidPeriods().stream().map(Period::value).collect(
                 Collectors.toList()
             )
         ).also { adapter ->
@@ -164,25 +176,17 @@ class ScheduleTaskFragment : Fragment() {
             periodSpinner.adapter = adapter
         }
 
-        var subPeriodAdapter = ArrayAdapter(
+        val validPeriodAdapter: ValidPeriodAdapter = ValidPeriodAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            listOf(Period.NONE.value)
+            taskCreationViewModel.getValidPeriods(),
+            Period.getValidSubPeriods(Period.DAILY)
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             subPeriodSpinner.adapter = adapter
         }
-        //TODO this is resetting the spinner to DAILY which is then updating the sub period to DAILY every time. Need to change it.
-        // Maybe either access the inner adapter and add/remove from it or remove the listener and set it on after updating it
         taskCreationViewModel.getValidSubPeriods().observe(this.viewLifecycleOwner) {
-            subPeriodAdapter = ArrayAdapter<String>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                it.stream().map(Period::value).collect(Collectors.toList())
-            ).also { adapter ->
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                subPeriodSpinner.adapter = adapter
-            }
+            validPeriodAdapter.setValidPeriods(it)
         }
 
         taskCreationViewModel.getPeriod().observe(this.viewLifecycleOwner) {
@@ -199,7 +203,7 @@ class ScheduleTaskFragment : Fragment() {
             val selectedPeriod = subPeriodSpinner.selectedItem
             if (it != null && selectedPeriod != it)
                 subPeriodSpinner.setSelection(
-                    subPeriodAdapter.getPosition(
+                    validPeriodAdapter.getPosition(
                         it.value
                     )
                 )
@@ -217,29 +221,33 @@ class ScheduleTaskFragment : Fragment() {
 
         taskCreationViewModel.getTimesPerPeriod().observe(this.viewLifecycleOwner) {
             if (timesPerPeriodInput.text == null || (timesPerPeriodInput.text.toString()
-                    .isNotBlank() && timesPerPeriodInput.text.toString().toInt() != it)
+                    .isNotBlank() && timesPerPeriodInput.text.toString() != it.toString())
             ) {
                 timesPerPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
-
-                enableCreateButtonIfParametersValid()
             }
+
+            enableCreateButtonIfParametersValid()
         }
         timesPerPeriodInput.doAfterTextChanged {
-            if (taskCreationViewModel.getTimesPerPeriod().value != Integer.parseInt(it.toString()))
+            if (it.toString().isBlank())
+                taskCreationViewModel.setTimesPerPeriod(0)
+            else if (taskCreationViewModel.getTimesPerPeriod().value != Integer.parseInt(it.toString()))
                 taskCreationViewModel.setTimesPerPeriod(Integer.parseInt(it.toString()))
         }
 
         taskCreationViewModel.getMaxTimesPerSubPeriod().observe(this.viewLifecycleOwner) {
             if (timesPerSubPeriodInput.text == null || (timesPerPeriodInput.text.toString()
-                    .isNotBlank() && timesPerSubPeriodInput.text.toString().toInt() != it)
+                    .isNotBlank() && timesPerSubPeriodInput.text.toString() != it.toString())
             ) {
                 timesPerSubPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
-
-                enableCreateButtonIfParametersValid()
             }
+
+            enableCreateButtonIfParametersValid()
         }
         timesPerSubPeriodInput.doAfterTextChanged {
-            if (taskCreationViewModel.getMaxTimesPerSubPeriod().value != Integer.parseInt(it.toString()))
+            if (it.toString().isBlank())
+                taskCreationViewModel.setMaxTimesPerSubPeriod(0)
+            else if (taskCreationViewModel.getMaxTimesPerSubPeriod().value != Integer.parseInt(it.toString()))
                 taskCreationViewModel.setMaxTimesPerSubPeriod(Integer.parseInt(it.toString()))
         }
     }

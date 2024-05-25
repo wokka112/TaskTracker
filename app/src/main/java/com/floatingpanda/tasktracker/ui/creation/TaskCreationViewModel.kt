@@ -21,7 +21,6 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.stream.Collectors
 
 //TODO how to deal with tasks which are one offs rather than repeating?
 //TODO how to create records when periods change? Would need a polling thing maybe...
@@ -35,13 +34,13 @@ class TaskCreationViewModel(
     private var category: MutableLiveData<String> = MutableLiveData("")
     private var info: MutableLiveData<String> = MutableLiveData("")
     private var period: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
-    private var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(1)
+    private var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(0)
     private var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
     private var subPeriod: MutableLiveData<Period> = MutableLiveData(Period.NONE)
     private var maxTimesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
 
     private var validSubPeriods: MutableLiveData<List<Period>> =
-        MutableLiveData(Period.getValidSubPeriods(Period.DAILY))
+        MutableLiveData(Period.getValidSubPeriodsWithoutNone(Period.DAILY))
     private var eligibleDays: MutableLiveData<Set<Day>> = MutableLiveData(
         setOf<Day>(
             Day.MONDAY,
@@ -53,8 +52,6 @@ class TaskCreationViewModel(
             Day.SUNDAY
         )
     )
-
-    val validPeriods: List<Period> = Period.entries.filter { p -> p != Period.NONE }
 
     fun createTemplate() {
         if (title.value == null || title.value!!.isBlank())
@@ -113,10 +110,10 @@ class TaskCreationViewModel(
                 recordRepository.writeRecord(this, initialRecord)
             }
         }
-        clearVariables()
+        clear()
     }
 
-    private fun clearVariables() {
+    fun clear() {
         title.postValue("")
         category.postValue("")
         info.postValue("")
@@ -165,18 +162,13 @@ class TaskCreationViewModel(
     fun setPeriod(period: Period) {
         this.period.postValue(period)
 
-        var validPeriods = Period.getValidSubPeriods(period)
-        if (validPeriods.size > 1)
-            validPeriods = validPeriods.stream().filter { period -> period != Period.NONE }.collect(
-                Collectors.toList()
-            )
-        this.validSubPeriods.postValue(validPeriods)
+        this.validSubPeriods.postValue(Period.getValidSubPeriodsWithoutNone(period))
 
         if (subPeriod.value != null
             && (subPeriod.value!! == period
-                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period)))
-            subPeriod.postValue(Period.NONE)
-
+                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period))
+        )
+            subPeriod.postValue(Period.DAILY)
     }
 
     fun getPeriod(): LiveData<Period> {
@@ -239,6 +231,17 @@ class TaskCreationViewModel(
         setEligibleDays(days)
     }
 
+    /**
+     * Gets all the valid periods - i.e. all except for NONE.
+     */
+    fun getValidPeriods(): List<Period> {
+        return Period.getPeriodsWithoutNone()
+    }
+
+    /**
+     * Get's the valid sub periods, which are all periods that are shorter than the current selected
+     * period except for NONE.
+     */
     fun getValidSubPeriods(): LiveData<List<Period>> {
         return validSubPeriods
     }
@@ -246,6 +249,7 @@ class TaskCreationViewModel(
     fun hasValidTemplateDetails(): Boolean {
         val METHOD_NAME = "hasValidTemplateDetails"
         val LOG_PREFIX = "Template details invalid - "
+        Log.d(METHOD_NAME, "Checking template details are valid")
 
         if (title.value.isNullOrBlank()) {
             Log.d(METHOD_NAME, LOG_PREFIX + " title is invalid")

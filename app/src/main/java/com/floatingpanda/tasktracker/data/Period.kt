@@ -1,7 +1,6 @@
 package com.floatingpanda.tasktracker.data
 
 import java.util.Calendar
-import java.util.stream.Collectors
 
 // TODO expand this to include more periods? What about fortnightly? Quarterly? etc.?
 //   Are quarterly and yearly overkill for now?
@@ -30,26 +29,32 @@ enum class Period(val value: String) {
 
     companion object {
         fun getValidSubPeriods(period: Period): List<Period> {
-            return entries.stream()
-                .filter { entry -> entry.ordinal < period.ordinal }
-                .collect(Collectors.toList())
+            return entries.filter { entry -> entry.ordinal < period.ordinal }
+        }
+
+        fun getValidSubPeriodsWithoutNone(period: Period): List<Period> {
+            return getValidSubPeriods(period).filter { p -> p != NONE }
+        }
+
+        fun getPeriodsWithoutNone(): List<Period> {
+            return Period.entries.filter { p -> p != NONE }
         }
 
         fun isPeriodGreaterThanOtherPeriod(period: Period, otherPeriod: Period): Boolean {
             return period.ordinal > otherPeriod.ordinal
         }
 
-        fun convertFromString(str: String): Period {
-            if (YEARLY.toString().uppercase() == str.uppercase())
+        fun convertFromString(str: String?): Period {
+            if (YEARLY.toString().uppercase() == str?.uppercase())
                 return YEARLY
 
-            if (MONTHLY.toString().uppercase() == str.uppercase())
+            if (MONTHLY.toString().uppercase() == str?.uppercase())
                 return MONTHLY
 
-            if (WEEKLY.toString().uppercase() == str.uppercase())
+            if (WEEKLY.toString().uppercase() == str?.uppercase())
                 return WEEKLY
 
-            if (DAILY.toString().uppercase() == str.uppercase())
+            if (DAILY.toString().uppercase() == str?.uppercase())
                 return DAILY
 
             return NONE

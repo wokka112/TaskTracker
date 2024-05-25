@@ -210,7 +210,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
-        android:text="Create" />
+        android:text="Create"
+        android:backgroundTint="@color/button" />
 
     <Button
         android:id="@+id/cancel_button"

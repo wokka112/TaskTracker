@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui
+package com.floatingpanda.tasktracker.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -29,14 +29,14 @@ class IncompleteTaskAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): IncompleteTaskAdapter.ViewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item_active_record, parent, false)
 
-        return IncompleteTaskAdapter.ViewHolder(view)
+        return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: IncompleteTaskAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = incompleteRecords.get(position)
         holder.taskText.text = record.title
 

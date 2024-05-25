@@ -39,7 +39,9 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         binding.appBarMain.fab.setOnClickListener {
-            navController.navigate(R.id.action_home_fragment_to_task_creation_create_fragment)
+            val bundle: Bundle = Bundle()
+            bundle.putBoolean("startingCreate", true)
+            navController.navigate(R.id.action_home_fragment_to_task_creation_create_fragment, bundle)
         }
     }
 

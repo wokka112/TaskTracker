@@ -9,9 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.databinding.FragmentHomeBinding
-import com.floatingpanda.tasktracker.ui.CompleteTaskAdapter
-import com.floatingpanda.tasktracker.ui.HeaderAdapter
-import com.floatingpanda.tasktracker.ui.IncompleteTaskAdapter
+import com.floatingpanda.tasktracker.ui.adapters.CompleteTaskAdapter
+import com.floatingpanda.tasktracker.ui.adapters.HeaderAdapter
+import com.floatingpanda.tasktracker.ui.adapters.IncompleteTaskAdapter
 
 class HomeFragment : Fragment() {
 

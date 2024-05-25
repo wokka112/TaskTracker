@@ -32,7 +32,6 @@ class MainApplication : Application() {
                 records.forEach { copyToRealm(it, UpdatePolicy.ALL) }
             }.build()
 
-        //TODO do I need to put this in an AppContainer to access it???
         val realm: Realm = Realm.open(realmConfig)
         appContainer = AppContainer(realm)
     }
