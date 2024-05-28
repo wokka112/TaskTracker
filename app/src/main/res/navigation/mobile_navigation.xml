@@ -31,4 +31,10 @@
         android:label="Schedule Task"
         tools:layout="@layout/fragment_task_creation_schedule" />
 
+    <fragment
+        android:id="@+id/nav_templates"
+        android:name="com.floatingpanda.tasktracker.ui.template.TemplatesFragment"
+        android:label="Templates"
+        tools:layout="@layout/fragment_templates" />
+
 </navigation>
