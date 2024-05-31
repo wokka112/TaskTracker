@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/template_title"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        tools:text="Template Title" />
+
+    <TextView
+        android:id="@+id/template_category"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="18sp"
+        tools:text="Health" />
+
+    <TextView
+        android:id="@+id/template_info"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_category"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="14sp"
+        tools:text="Some info about the template" />
+
+    <TextView
+        android:id="@+id/template_schedule_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="20dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="Schedule" />
+
+    <TextView
+        android:id="@+id/template_schedule_period_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:text="Repeat period:" />
+
+    <TextView
+        android:id="@+id/template_schedule_period"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/template_schedule_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="Weekly" />
+
+    <TextView
+        android:id="@+id/template_schedule_times_per_period_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:text="Target repetitions per period:" />
+
+    <TextView
+        android:id="@+id/template_schedule_times_per_period"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/template_schedule_times_per_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="5" />
+
+    <TextView
+        android:id="@+id/template_schedule_sub_period_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_times_per_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:text="Sub-period:" />
+
+    <TextView
+        android:id="@+id/template_schedule_sub_period"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/template_schedule_sub_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="Daily" />
+
+    <TextView
+        android:id="@+id/template_schedule_times_per_sub_period_header"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_sub_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:text="Max repetitions per sub-period:" />
+
+    <TextView
+        android:id="@+id/template_schedule_times_per_sub_period"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/template_schedule_times_per_sub_period_header"
+        app:layout_constraintLeft_toRightOf="@id/template_schedule_times_per_sub_period_header"
+        android:layout_marginStart="20dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="2" />
+
+    <TextView
+        android:id="@+id/template_schedule_eligible_days"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_times_per_sub_period_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        tools:text="Eligible Days" />
+
+<!--TODO Replace this with actual graphical icons that can be lit up and delit -->
+    <LinearLayout
+        android:id="@+id/template_schedule_eligible_days_checkbox_group"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_eligible_days"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal">
+
+        <CheckBox
+            android:id="@+id/days_checkbox_monday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="M"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_tuesday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_wednesday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="W"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_thursday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="T"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_friday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_sunday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:checked="true" />
+
+        <CheckBox
+            android:id="@+id/days_checkbox_saturday"
+            android:gravity="end|center"
+            android:layoutDirection="rtl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="S"
+            android:checked="true" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
