@@ -4,17 +4,23 @@ import android.util.Log
 import com.floatingpanda.tasktracker.data.Period
 import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.Realm
+import io.realm.kotlin.ext.query
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.query.RealmQuery
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 
 class RepeatableTaskTemplateRepository(private val realm: Realm) {
     fun getTemplates(): RealmQuery<RepeatableTaskTemplate> {
         return realm.query(RepeatableTaskTemplate::class)
+    }
+
+    fun findTemplate(id: ObjectId): RepeatableTaskTemplate? {
+        return realm.query<RepeatableTaskTemplate>("id == $0", id).find().getOrNull(0)
     }
 
     fun observeTemplates(templateObserver: FlowCollector<ResultsChange<RepeatableTaskTemplate>>) {

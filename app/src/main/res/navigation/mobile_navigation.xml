@@ -35,6 +35,20 @@
         android:id="@+id/nav_templates"
         android:name="com.floatingpanda.tasktracker.ui.template.TemplatesFragment"
         android:label="Templates"
-        tools:layout="@layout/fragment_templates" />
+        tools:layout="@layout/fragment_templates">
+        <action
+            android:id="@+id/action_templates_to_template_details_fragment"
+            app:destination="@id/nav_template_details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_template_details"
+        android:name="com.floatingpanda.tasktracker.ui.template.TemplateDetailsFragment"
+        android:label="Template Details"
+        tools:layout="@layout/fragment_template_details">
+        <argument
+            android:name="templateIdHexString"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

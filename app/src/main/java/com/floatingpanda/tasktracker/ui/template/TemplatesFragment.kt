@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.databinding.FragmentTemplatesBinding
 import com.floatingpanda.tasktracker.ui.adapters.TemplateAdapter
@@ -32,7 +33,11 @@ class TemplatesFragment : Fragment() {
             this.viewLifecycleOwner
         ) { templates: List<RepeatableTaskTemplate> ->
             if (templates.isNotEmpty())
-                recyclerView.adapter = TemplateAdapter(templates)
+                recyclerView.adapter = TemplateAdapter(templates) { id ->
+                    val action =
+                        TemplatesFragmentDirections.actionTemplatesToTemplateDetailsFragment(id)
+                    root.findNavController().navigate(action)
+                }
         }
 
         return root

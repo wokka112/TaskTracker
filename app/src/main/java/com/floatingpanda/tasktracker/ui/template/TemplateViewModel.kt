@@ -9,16 +9,15 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.floatingpanda.tasktracker.MainApplication
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
-import com.floatingpanda.tasktracker.ui.home.HomeViewModel
 import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
+import org.mongodb.kbson.ObjectId
 
 class TemplateViewModel(
-    templateRepository: RepeatableTaskTemplateRepository,
+    private val templateRepository: RepeatableTaskTemplateRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val templates: MutableLiveData<List<RepeatableTaskTemplate>> =
@@ -40,6 +39,10 @@ class TemplateViewModel(
 
     fun getTemplates(): LiveData<List<RepeatableTaskTemplate>> {
         return templates
+    }
+
+    fun getTemplate(id: ObjectId): RepeatableTaskTemplate? {
+        return templateRepository.findTemplate(id)
     }
 
     companion object {

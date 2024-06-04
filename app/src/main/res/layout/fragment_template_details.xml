@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.template.TemplateDetailsFragment">
 
     <TextView
         android:id="@+id/template_title"
@@ -155,7 +156,7 @@
         android:textColor="@color/black"
         tools:text="Eligible Days" />
 
-<!--TODO Replace this with actual graphical icons that can be lit up and delit -->
+    <!--TODO Replace this with actual graphical icons that can be lit up and delit -->
     <LinearLayout
         android:id="@+id/template_schedule_eligible_days_checkbox_group"
         android:orientation="horizontal"
@@ -231,5 +232,15 @@
             android:checked="true" />
     </LinearLayout>
 
+<!--TODO change to a pencil icon for a button and put in top-right corner??? -->
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/template_schedule_eligible_days_checkbox_group"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="Edit"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

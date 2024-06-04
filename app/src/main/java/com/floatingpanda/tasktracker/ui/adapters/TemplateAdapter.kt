@@ -8,7 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 
-class TemplateAdapter(private val templates: List<RepeatableTaskTemplate>) :
+class TemplateAdapter(
+    private val templates: List<RepeatableTaskTemplate>,
+    private val navFunction: (id: String) -> Unit
+) :
     RecyclerView.Adapter<TemplateAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val view: View
@@ -38,7 +41,7 @@ class TemplateAdapter(private val templates: List<RepeatableTaskTemplate>) :
         holder.categoryText.text = template.category
 
         holder.view.setOnClickListener {
-            //TODO navigate to template page and send template id as attribute
+            navFunction(template.id.toHexString())
         }
     }
 
