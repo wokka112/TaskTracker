@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.template.TemplateDetailsFragment">
+    tools:context=".ui.tasks.TaskDetailsFragment">
 
     <TextView
-        android:id="@+id/template_title"
+        android:id="@+id/task_title"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,13 +16,13 @@
         android:layout_marginTop="10dp"
         android:textSize="24sp"
         android:textColor="@color/black"
-        tools:text="Template Title" />
+        tools:text="Task Title" />
 
     <TextView
-        android:id="@+id/template_category"
+        android:id="@+id/task_category"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_title"
+        app:layout_constraintTop_toBottomOf="@id/task_title"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="5dp"
@@ -32,10 +32,10 @@
         tools:text="Health" />
 
     <TextView
-        android:id="@+id/template_info"
+        android:id="@+id/task_info"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_category"
+        app:layout_constraintTop_toBottomOf="@id/task_category"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="5dp"
         android:layout_marginStart="10dp"
@@ -44,10 +44,10 @@
         tools:text="Some info about the template" />
 
     <TextView
-        android:id="@+id/template_schedule_header"
+        android:id="@+id/task_schedule_header"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_info"
+        app:layout_constraintTop_toBottomOf="@id/task_info"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="20dp"
@@ -56,10 +56,10 @@
         android:text="Schedule" />
 
     <TextView
-        android:id="@+id/template_schedule_period_header"
+        android:id="@+id/task_schedule_period_header"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_header"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_header"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
@@ -68,20 +68,20 @@
         android:text="Repeat period:" />
 
     <TextView
-        android:id="@+id/template_schedule_period"
+        android:id="@+id/task_schedule_period"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/template_schedule_period_header"
-        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        app:layout_constraintTop_toTopOf="@id/task_schedule_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/task_schedule_times_per_sub_period"
         android:textSize="16sp"
         android:textColor="@color/black"
         tools:text="Weekly" />
 
     <TextView
-        android:id="@+id/template_schedule_times_per_period_header"
+        android:id="@+id/task_schedule_times_per_period_header"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_period_header"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_period_header"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
@@ -90,20 +90,20 @@
         android:text="Target repetitions per period:" />
 
     <TextView
-        android:id="@+id/template_schedule_times_per_period"
+        android:id="@+id/task_schedule_times_per_period"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/template_schedule_times_per_period_header"
-        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        app:layout_constraintTop_toTopOf="@id/task_schedule_times_per_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/task_schedule_times_per_sub_period"
         android:textSize="16sp"
         android:textColor="@color/black"
         tools:text="5" />
 
     <TextView
-        android:id="@+id/template_schedule_sub_period_header"
+        android:id="@+id/task_schedule_sub_period_header"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_times_per_period_header"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_times_per_period_header"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
@@ -112,20 +112,20 @@
         android:text="Sub-period:" />
 
     <TextView
-        android:id="@+id/template_schedule_sub_period"
+        android:id="@+id/task_schedule_sub_period"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/template_schedule_sub_period_header"
-        app:layout_constraintLeft_toLeftOf="@id/template_schedule_times_per_sub_period"
+        app:layout_constraintTop_toTopOf="@id/task_schedule_sub_period_header"
+        app:layout_constraintLeft_toLeftOf="@id/task_schedule_times_per_sub_period"
         android:textSize="16sp"
         android:textColor="@color/black"
         tools:text="Daily" />
 
     <TextView
-        android:id="@+id/template_schedule_times_per_sub_period_header"
+        android:id="@+id/task_schedule_times_per_sub_period_header"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_sub_period_header"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_sub_period_header"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="20dp"
         android:layout_marginTop="10dp"
@@ -134,21 +134,21 @@
         android:text="Max repetitions per sub-period:" />
 
     <TextView
-        android:id="@+id/template_schedule_times_per_sub_period"
+        android:id="@+id/task_schedule_times_per_sub_period"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/template_schedule_times_per_sub_period_header"
-        app:layout_constraintLeft_toRightOf="@id/template_schedule_times_per_sub_period_header"
+        app:layout_constraintTop_toTopOf="@id/task_schedule_times_per_sub_period_header"
+        app:layout_constraintLeft_toRightOf="@id/task_schedule_times_per_sub_period_header"
         android:layout_marginStart="20dp"
         android:textSize="16sp"
         android:textColor="@color/black"
         tools:text="2" />
 
     <TextView
-        android:id="@+id/template_schedule_eligible_days"
+        android:id="@+id/task_schedule_eligible_days"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_times_per_sub_period_header"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_times_per_sub_period_header"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="20dp"
         android:layout_marginStart="20dp"
@@ -158,11 +158,11 @@
 
     <!--TODO Replace this with actual graphical icons that can be lit up and delit -->
     <LinearLayout
-        android:id="@+id/template_schedule_eligible_days_checkbox_group"
+        android:id="@+id/task_schedule_eligible_days_checkbox_group"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_eligible_days"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_eligible_days"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="5dp"
@@ -232,15 +232,6 @@
             android:checked="true" />
     </LinearLayout>
 
-<!--TODO change to a pencil icon for a button and put in top-right corner??? -->
-    <Button
-        android:id="@+id/edit_button"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/template_schedule_eligible_days_checkbox_group"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="Edit"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="5dp" />
-
+    <!--TODO change to a pencil icon button and put in top-right corner??? -->
+    <include layout="@layout/edit_fab" />
 </androidx.constraintlayout.widget.ConstraintLayout>

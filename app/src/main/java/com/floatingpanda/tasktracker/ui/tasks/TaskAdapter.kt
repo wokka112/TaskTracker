@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.adapters
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 
-class TemplateAdapter(
-    private val templates: List<RepeatableTaskTemplate>,
+class TaskAdapter(
+    private val tasks: List<RepeatableTaskTemplate>,
     private val navFunction: (id: String) -> Unit
 ) :
-    RecyclerView.Adapter<TemplateAdapter.ViewHolder>() {
+    RecyclerView.Adapter<TaskAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val view: View
         val titleText: TextView
@@ -21,7 +21,7 @@ class TemplateAdapter(
         init {
             this.view = view;
             titleText = view.findViewById(R.id.template_name)
-            categoryText = view.findViewById(R.id.template_category)
+            categoryText = view.findViewById(R.id.task_category)
         }
     }
 
@@ -36,7 +36,7 @@ class TemplateAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val template = templates.get(position)
+        val template = tasks.get(position)
         holder.titleText.text = template.title
         holder.categoryText.text = template.category
 
@@ -45,5 +45,5 @@ class TemplateAdapter(
         }
     }
 
-    override fun getItemCount() = templates.size
+    override fun getItemCount() = tasks.size
 }

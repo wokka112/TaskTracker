@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.creation
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.os.Bundle
 import android.util.Log
@@ -19,10 +19,9 @@ import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.ui.adapters.ValidPeriodAdapter
 import java.util.stream.Collectors
 
-class ScheduleTaskFragment : Fragment() {
+class UpsertTaskScheduleFragment : Fragment() {
     private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
     private lateinit var createButton: Button
 
@@ -44,8 +43,8 @@ class ScheduleTaskFragment : Fragment() {
         }
         createButton.setOnClickListener {
             try {
-                taskCreationViewModel.createTemplate()
-                findNavController().navigate(R.id.nav_home)
+                taskCreationViewModel.createTask()
+                findNavController().navigate(R.id.nav_todos)
             } catch (e: Exception) {
                 Log.e("task creation", "Error creating task. Template creation failed")
             }

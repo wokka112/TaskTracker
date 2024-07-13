@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.creation
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.floatingpanda.tasktracker.R
 
-class CreateTaskFragment : Fragment() {
+class UpsertTaskDetailsFragment : Fragment() {
     private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
 
     private lateinit var continueButton: Button

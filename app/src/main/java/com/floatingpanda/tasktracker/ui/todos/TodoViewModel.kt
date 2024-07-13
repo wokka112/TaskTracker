@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.template
+package com.floatingpanda.tasktracker.ui.todos
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -6,43 +6,46 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.floatingpanda.tasktracker.MainApplication
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
-import org.mongodb.kbson.ObjectId
+import kotlinx.coroutines.launch
 
-class TemplateViewModel(
-    private val templateRepository: RepeatableTaskTemplateRepository,
+class TodoViewModel(
+    private val recordRepository: RepeatableTaskRecordRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val templates: MutableLiveData<List<RepeatableTaskTemplate>> =
-        MutableLiveData<List<RepeatableTaskTemplate>>(listOf())
+    private val records: MutableLiveData<List<RepeatableTaskRecord>> =
+        MutableLiveData<List<RepeatableTaskRecord>>(listOf())
 
     init {
-        templateRepository.observeTemplates { changes: ResultsChange<RepeatableTaskTemplate> ->
+        recordRepository.observeRecords { changes: ResultsChange<RepeatableTaskRecord> ->
             when (changes) {
                 is InitialResults -> {
-                    templates.postValue(changes.list)
+                    records.postValue(changes.list)
                 }
 
                 is UpdatedResults -> {
-                    templates.postValue(changes.list)
+                    records.postValue(changes.list)
                 }
+
+                else -> {}
             }
         }
     }
 
-    fun getTemplates(): LiveData<List<RepeatableTaskTemplate>> {
-        return templates
+    fun getRecords(): LiveData<List<RepeatableTaskRecord>> {
+        return records
     }
 
-    fun getTemplate(id: ObjectId): RepeatableTaskTemplate? {
-        return templateRepository.findTemplate(id)
+    fun updateRecord(record: RepeatableTaskRecord) {
+        viewModelScope.launch { recordRepository.updateRecord(record) }
     }
 
     companion object {
@@ -51,8 +54,8 @@ class TemplateViewModel(
                 val savedStateHandle = createSavedStateHandle()
                 val appContainer =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MainApplication).getAppContainer()
-                TemplateViewModel(
-                    templateRepository = appContainer.repeatableTaskTemplateRepository,
+                TodoViewModel(
+                    recordRepository = appContainer.repeatableTaskRecordRepository,
                     savedStateHandle = savedStateHandle
                 )
             }

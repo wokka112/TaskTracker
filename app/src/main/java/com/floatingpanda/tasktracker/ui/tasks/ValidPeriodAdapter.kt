@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.adapters
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.annotation.SuppressLint
 import android.content.Context

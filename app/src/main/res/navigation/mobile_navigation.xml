@@ -3,21 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_todos">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="com.floatingpanda.tasktracker.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home">
+        android:id="@+id/nav_todos"
+        android:name="com.floatingpanda.tasktracker.ui.todos.TodosFragment"
+        android:label="Todos"
+        tools:layout="@layout/fragment_todos">
         <action
-            android:id="@+id/action_home_fragment_to_task_creation_create_fragment"
+            android:id="@+id/action_todo_fragment_to_task_creation_create_fragment"
             app:destination="@id/nav_task_creation_create" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_task_creation_create"
-        android:name="com.floatingpanda.tasktracker.ui.creation.CreateTaskFragment"
+        android:name="com.floatingpanda.tasktracker.ui.tasks.UpsertTaskDetailsFragment"
         android:label="Create Task"
         tools:layout="@layout/fragment_task_creation_create">
         <action
@@ -27,27 +27,27 @@
 
     <fragment
         android:id="@+id/nav_task_creation_schedule"
-        android:name="com.floatingpanda.tasktracker.ui.creation.ScheduleTaskFragment"
+        android:name="com.floatingpanda.tasktracker.ui.tasks.UpsertTaskScheduleFragment"
         android:label="Schedule Task"
         tools:layout="@layout/fragment_task_creation_schedule" />
 
     <fragment
-        android:id="@+id/nav_templates"
-        android:name="com.floatingpanda.tasktracker.ui.template.TemplatesFragment"
-        android:label="Templates"
-        tools:layout="@layout/fragment_templates">
+        android:id="@+id/nav_tasks"
+        android:name="com.floatingpanda.tasktracker.ui.tasks.TasksFragment"
+        android:label="Tasks"
+        tools:layout="@layout/fragment_tasks">
         <action
-            android:id="@+id/action_templates_to_template_details_fragment"
-            app:destination="@id/nav_template_details" />
+            android:id="@+id/action_tasks_to_task_details_fragment"
+            app:destination="@id/nav_task_details" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_template_details"
-        android:name="com.floatingpanda.tasktracker.ui.template.TemplateDetailsFragment"
-        android:label="Template Details"
-        tools:layout="@layout/fragment_template_details">
+        android:id="@+id/nav_task_details"
+        android:name="com.floatingpanda.tasktracker.ui.tasks.TaskDetailsFragment"
+        android:label="Task Details"
+        tools:layout="@layout/fragment_task_details">
         <argument
-            android:name="templateIdHexString"
+            android:name="taskIdHexString"
             app:argType="string" />
     </fragment>
 

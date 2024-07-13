@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.template
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.os.Bundle
 import android.util.Log
@@ -8,19 +8,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
-import com.floatingpanda.tasktracker.databinding.FragmentTemplateDetailsBinding
+import com.floatingpanda.tasktracker.databinding.FragmentTaskDetailsBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.mongodb.kbson.BsonObjectId
 import org.mongodb.kbson.ObjectId
 
-class TemplateDetailsFragment : Fragment() {
-    private var _binding: FragmentTemplateDetailsBinding? = null
+class TaskDetailsFragment : Fragment() {
+    private var _binding: FragmentTaskDetailsBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-    private val templateViewModel: TemplateViewModel by viewModels<TemplateViewModel> { TemplateViewModel.Factory }
+    private val taskViewModel: TaskViewModel by viewModels<TaskViewModel> { TaskViewModel.Factory }
 
 
     override fun onCreateView(
@@ -28,50 +30,50 @@ class TemplateDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentTemplateDetailsBinding.inflate(inflater, container, false)
-        val templateArgs: TemplateDetailsFragmentArgs by navArgs()
+        _binding = FragmentTaskDetailsBinding.inflate(inflater, container, false)
+        val taskArgs: TaskDetailsFragmentArgs by navArgs()
         val root: View = binding.root
         val id: ObjectId =
-            BsonObjectId.invoke(templateArgs.templateIdHexString)
-        val template: RepeatableTaskTemplate? = templateViewModel.getTemplate(id)
+            BsonObjectId.invoke(taskArgs.taskIdHexString)
+        val task: RepeatableTaskTemplate? = taskViewModel.getTemplate(id)
 
-        if (template == null) {
-            val title = binding.templateTitle
-            title.text = "ERROR: NO TEMPLATE FOUND"
+        if (task == null) {
+            val title = binding.taskTitle
+            title.text = "ERROR: NO TASK FOUND"
 
-            Log.e("onCreateView", "Unable to find template for $id")
+            Log.e("onCreateView", "Unable to find task for $id")
         } else {
-            val title = binding.templateTitle
-            title.text = template.title
+            val title = binding.taskTitle
+            title.text = task.title
 
-            val category = binding.templateCategory
-            category.text = template.category
+            val category = binding.taskCategory
+            category.text = task.category
 
-            val info = binding.templateInfo
-            if (template.info == null)
+            val info = binding.taskInfo
+            if (task.info == null)
                 info.visibility = View.INVISIBLE
             else
-                info.text = template.info
+                info.text = task.info
 
-            val period = binding.templateSchedulePeriod
-            period.text = template.repeatPeriod.value
+            val period = binding.taskSchedulePeriod
+            period.text = task.repeatPeriod.value
 
-            val timesPerPeriod = binding.templateScheduleTimesPerPeriod
-            timesPerPeriod.text = template.timesPerPeriod.toString()
+            val timesPerPeriod = binding.taskScheduleTimesPerPeriod
+            timesPerPeriod.text = task.timesPerPeriod.toString()
 
-            val subPeriod = binding.templateScheduleSubPeriod
-            if (template.subRepeatPeriod == null)
+            val subPeriod = binding.taskScheduleSubPeriod
+            if (task.subRepeatPeriod == null)
                 subPeriod.setText("None")
             else
-                subPeriod.setText(template.subRepeatPeriod!!.value)
+                subPeriod.setText(task.subRepeatPeriod!!.value)
 
-            val timesPerSubPeriod = binding.templateScheduleTimesPerSubPeriod
-            if (template.maxTimesPerSubPeriod == null)
+            val timesPerSubPeriod = binding.taskScheduleTimesPerSubPeriod
+            if (task.maxTimesPerSubPeriod == null)
                 timesPerSubPeriod.text = "0"
             else
-                timesPerSubPeriod.text = template.maxTimesPerSubPeriod!!.toString()
+                timesPerSubPeriod.text = task.maxTimesPerSubPeriod!!.toString()
 
-            val eligibleDays = template.eligibleDays
+            val eligibleDays = task.eligibleDays
 
             val monday = binding.daysCheckboxMonday
             monday.isChecked = eligibleDays.contains(Day.MONDAY)
@@ -94,8 +96,7 @@ class TemplateDetailsFragment : Fragment() {
             val sunday = binding.daysCheckboxSunday
             sunday.isChecked = eligibleDays.contains(Day.SUNDAY)
 
-            val editButton = binding.editButton
-            //TODO add in onClickListener to take to an edit screen
+            val editButton = binding.root.findViewById<FloatingActionButton>(R.id.fab);
         }
 
         return root

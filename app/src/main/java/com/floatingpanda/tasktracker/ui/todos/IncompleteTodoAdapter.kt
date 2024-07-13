@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.adapters
+package com.floatingpanda.tasktracker.ui.todos
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +10,10 @@ import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import io.realm.kotlin.ext.copyFromRealm
 
-class IncompleteTaskAdapter(
+class IncompleteTodoAdapter(
     private val incompleteRecords: List<RepeatableTaskRecord>,
     private val updateRecord: (RepeatableTaskRecord) -> Unit
-) : RecyclerView.Adapter<IncompleteTaskAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<IncompleteTodoAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskText: TextView
         val completeCheckBox: CheckBox

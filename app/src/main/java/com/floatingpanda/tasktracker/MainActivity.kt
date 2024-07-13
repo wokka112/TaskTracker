@@ -32,17 +32,12 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home
+                R.id.nav_todos
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        binding.appBarMain.fab.setOnClickListener {
-            val bundle: Bundle = Bundle()
-            bundle.putBoolean("startingCreate", true)
-            navController.navigate(R.id.action_home_fragment_to_task_creation_create_fragment, bundle)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

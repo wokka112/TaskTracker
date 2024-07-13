@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.creation
+package com.floatingpanda.tasktracker.ui.tasks
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -53,7 +53,7 @@ class TaskCreationViewModel(
         )
     )
 
-    fun createTemplate() {
+    fun createTask() {
         if (title.value == null || title.value!!.isBlank())
             throw Exception("Title is null or blank")
 

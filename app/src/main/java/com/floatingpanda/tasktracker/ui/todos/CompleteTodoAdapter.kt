@@ -1,4 +1,4 @@
-package com.floatingpanda.tasktracker.ui.adapters
+package com.floatingpanda.tasktracker.ui.todos
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 
-class CompleteTaskAdapter(
+class CompleteTodoAdapter(
     private val records: List<RepeatableTaskRecord>
-) : RecyclerView.Adapter<CompleteTaskAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<CompleteTodoAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val taskText: TextView
         val completeCheckBox: CheckBox
