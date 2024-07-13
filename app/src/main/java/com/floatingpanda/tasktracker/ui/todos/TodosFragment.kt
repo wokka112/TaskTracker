@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.databinding.FragmentTasksBinding
-import com.floatingpanda.tasktracker.ui.tasks.TaskCreationViewModel
+import com.floatingpanda.tasktracker.ui.tasks.TaskUpsertViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TodosFragment : Fragment() {
@@ -22,7 +22,7 @@ class TodosFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _fragmentBinding!!
     private val todoViewModel: TodoViewModel by viewModels<TodoViewModel> { TodoViewModel.Factory }
-    private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
+    private val taskUpsertViewModel: TaskUpsertViewModel by activityViewModels { TaskUpsertViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +44,9 @@ class TodosFragment : Fragment() {
         }
 
         binding.root.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            taskCreationViewModel.clear()
+            taskUpsertViewModel.clear()
             root.findNavController().navigate(
-                R.id.action_todo_fragment_to_task_creation_create_fragment,
+                R.id.action_todo_fragment_to_task_upsert_details_fragment,
             )
         }
         return root

@@ -13,6 +13,8 @@ import java.time.temporal.ChronoField
 import java.util.Objects
 
 class RepeatableTaskRecord(
+    //TODO should this just be an id pointing to the latest template? Or will the template automatically update?
+    // Actually it'd be best to keep them separate so you could see what the template was at the time?
     var template: RepeatableTaskTemplate?,
     startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that

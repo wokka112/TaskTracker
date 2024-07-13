@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
@@ -97,6 +98,11 @@ class TaskDetailsFragment : Fragment() {
             sunday.isChecked = eligibleDays.contains(Day.SUNDAY)
 
             val editButton = binding.root.findViewById<FloatingActionButton>(R.id.fab);
+            editButton.setOnClickListener {
+                val action =
+                    TaskDetailsFragmentDirections.actionTaskDetailsFragmentToTaskUpsertDetailsFragment(id.toHexString())
+                root.findNavController().navigate(action)
+            }
         }
 
         return root

@@ -11,25 +11,28 @@
         android:label="Todos"
         tools:layout="@layout/fragment_todos">
         <action
-            android:id="@+id/action_todo_fragment_to_task_creation_create_fragment"
-            app:destination="@id/nav_task_creation_create" />
+            android:id="@+id/action_todo_fragment_to_task_upsert_details_fragment"
+            app:destination="@id/nav_task_upsert_details" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_task_creation_create"
+        android:id="@+id/nav_task_upsert_details"
         android:name="com.floatingpanda.tasktracker.ui.tasks.UpsertTaskDetailsFragment"
         android:label="Create Task"
         tools:layout="@layout/fragment_task_creation_create">
+        <argument
+            android:name="taskIdHexString"
+            app:argType="string" />
         <action
-            android:id="@+id/action_task_creation_create_fragment_to_task_creation_schedule_fragment"
-            app:destination="@id/nav_task_creation_schedule" />
+            android:id="@+id/action_task_upsert_details_fragment_to_task_upsert_schedule_fragment"
+            app:destination="@id/nav_task_upsert_schedule" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_task_creation_schedule"
+        android:id="@+id/nav_task_upsert_schedule"
         android:name="com.floatingpanda.tasktracker.ui.tasks.UpsertTaskScheduleFragment"
         android:label="Schedule Task"
-        tools:layout="@layout/fragment_task_creation_schedule" />
+        tools:layout="@layout/fragment_task_upsert_schedule" />
 
     <fragment
         android:id="@+id/nav_tasks"
@@ -39,6 +42,9 @@
         <action
             android:id="@+id/action_tasks_to_task_details_fragment"
             app:destination="@id/nav_task_details" />
+        <action
+            android:id="@+id/action_tasks_fragment_to_task_upsert_details_fragment"
+            app:destination="@id/nav_task_upsert_details" />
     </fragment>
 
     <fragment
@@ -49,6 +55,9 @@
         <argument
             android:name="taskIdHexString"
             app:argType="string" />
+        <action
+            android:id="@+id/action_task_details_fragment_to_task_upsert_details_fragment"
+            app:destination="@id/nav_task_upsert_details" />
     </fragment>
 
 </navigation>

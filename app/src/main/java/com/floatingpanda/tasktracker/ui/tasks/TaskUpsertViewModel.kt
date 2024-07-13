@@ -20,11 +20,12 @@ import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
 import kotlinx.coroutines.launch
+import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 
 //TODO how to deal with tasks which are one offs rather than repeating?
 //TODO how to create records when periods change? Would need a polling thing maybe...
-class TaskCreationViewModel(
+class TaskUpsertViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,
     private val recordRepository: RepeatableTaskRecordRepository,
     private val realmHelper: RealmHelper,
@@ -33,10 +34,10 @@ class TaskCreationViewModel(
     private var title: MutableLiveData<String> = MutableLiveData("")
     private var category: MutableLiveData<String> = MutableLiveData("")
     private var info: MutableLiveData<String> = MutableLiveData("")
-    private var period: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
+    private var repeatPeriod: MutableLiveData<Period> = MutableLiveData(Period.DAILY)
     private var timesPerPeriod: MutableLiveData<Int> = MutableLiveData(0)
     private var isSubPeriodEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
-    private var subPeriod: MutableLiveData<Period> = MutableLiveData(Period.NONE)
+    private var subRepeatPeriod: MutableLiveData<Period> = MutableLiveData(Period.NONE)
     private var maxTimesPerSubPeriod: MutableLiveData<Int?> = MutableLiveData(null)
 
     private var validSubPeriods: MutableLiveData<List<Period>> =
@@ -53,6 +54,30 @@ class TaskCreationViewModel(
         )
     )
 
+    fun populateTaskIfTaskNotPresent(id: ObjectId) {
+        if (isTaskPresent())
+            return
+
+        val template = templateRepository.findTemplate(id)
+        if (template != null) {
+            title.postValue(template.title)
+            category.postValue(template.category)
+            info.postValue(template.info)
+            repeatPeriod.postValue(template.repeatPeriod)
+            timesPerPeriod.postValue(template.timesPerPeriod)
+            isSubPeriodEnabled.postValue(template.subRepeatPeriod != null && template.subRepeatPeriod != Period.NONE)
+            subRepeatPeriod.postValue(template.subRepeatPeriod)
+            maxTimesPerSubPeriod.postValue(template.maxTimesPerSubPeriod)
+            eligibleDays.postValue(template.eligibleDays)
+        }
+    }
+
+    fun isTaskPresent(): Boolean {
+        return !title.value.isNullOrBlank()
+                && !category.value.isNullOrBlank()
+                && !info.value.isNullOrBlank()
+    }
+
     fun createTask() {
         if (title.value == null || title.value!!.isBlank())
             throw Exception("Title is null or blank")
@@ -60,7 +85,7 @@ class TaskCreationViewModel(
         if (category.value == null || category.value!!.isBlank())
             throw Exception("Category is null or blank")
 
-        if (period.value == null)
+        if (repeatPeriod.value == null)
             throw Exception("Period is null")
 
         if (timesPerPeriod.value == null || timesPerPeriod.value!! <= 0)
@@ -81,18 +106,18 @@ class TaskCreationViewModel(
         template.title = title.value!!
         template.info = info.value
         template.category = category.value!!
-        template.repeatPeriod = period.value!!
+        template.repeatPeriod = repeatPeriod.value!!
         template.timesPerPeriod = timesPerPeriod.value!!
         template.eligibleDays = eligibleDays.value!!
 
         if (isSubPeriodEnabled.value != null && isSubPeriodEnabled.value!!) {
-            if (subPeriod.value == null)
+            if (subRepeatPeriod.value == null)
                 throw Exception("Sub period is enabled but sub period is null")
 
             if (maxTimesPerSubPeriod.value == null && maxTimesPerSubPeriod.value!! <= 0)
                 throw Exception("Sub period is enabled but times per sub period is null or less than or equal to 0")
 
-            template.subRepeatPeriod = subPeriod.value
+            template.subRepeatPeriod = subRepeatPeriod.value
             template.maxTimesPerSubPeriod = maxTimesPerSubPeriod.value
         }
 
@@ -100,7 +125,7 @@ class TaskCreationViewModel(
             realmHelper.writeTransaction {
                 val savedTemplate = templateRepository.writeTemplate(this, template)
                 val today = LocalDate.now()
-                //TODO Do this somewhere else??? Or maybe always create initial one with initial template? Makes sense...
+                //TODO grab latest record if it exists and is active before creating this one to account for updating a template
                 val initialRecord =
                     RepeatableTaskRecord(
                         savedTemplate,
@@ -117,10 +142,10 @@ class TaskCreationViewModel(
         title.postValue("")
         category.postValue("")
         info.postValue("")
-        period.postValue(Period.DAILY)
+        repeatPeriod.postValue(Period.DAILY)
         timesPerPeriod.postValue(0)
         isSubPeriodEnabled.postValue(false)
-        subPeriod.postValue(Period.DAILY)
+        subRepeatPeriod.postValue(Period.DAILY)
         maxTimesPerSubPeriod.postValue(null)
         eligibleDays.postValue(
             setOf<Day>(
@@ -160,19 +185,19 @@ class TaskCreationViewModel(
     }
 
     fun setPeriod(period: Period) {
-        this.period.postValue(period)
+        this.repeatPeriod.postValue(period)
 
         this.validSubPeriods.postValue(Period.getValidSubPeriodsWithoutNone(period))
 
-        if (subPeriod.value != null
-            && (subPeriod.value!! == period
-                    || Period.isPeriodGreaterThanOtherPeriod(subPeriod.value!!, period))
+        if (subRepeatPeriod.value != null
+            && (subRepeatPeriod.value!! == period
+                    || Period.isPeriodGreaterThanOtherPeriod(subRepeatPeriod.value!!, period))
         )
-            subPeriod.postValue(Period.DAILY)
+            subRepeatPeriod.postValue(Period.DAILY)
     }
 
     fun getPeriod(): LiveData<Period> {
-        return period
+        return repeatPeriod
     }
 
     fun setTimesPerPeriod(timesPerPeriod: Int) {
@@ -192,15 +217,19 @@ class TaskCreationViewModel(
     }
 
     fun setSubPeriod(subPeriod: Period?) {
-        if (subPeriod != null && Period.isPeriodGreaterThanOtherPeriod(subPeriod, period.value!!)) {
-            this.subPeriod.postValue(Period.NONE)
+        if (subPeriod != null && Period.isPeriodGreaterThanOtherPeriod(
+                subPeriod,
+                repeatPeriod.value!!
+            )
+        ) {
+            this.subRepeatPeriod.postValue(Period.NONE)
         } else {
-            this.subPeriod.postValue(subPeriod)
+            this.subRepeatPeriod.postValue(subPeriod)
         }
     }
 
     fun getSubPeriod(): LiveData<Period?> {
-        return subPeriod
+        return subRepeatPeriod
     }
 
     fun setMaxTimesPerSubPeriod(maxTimesPerSubPeriod: Int?) {
@@ -275,7 +304,7 @@ class TaskCreationViewModel(
                 )
             }
 
-            if (subPeriod.value == Period.NONE)
+            if (subRepeatPeriod.value == Period.NONE)
                 Log.d(
                     METHOD_NAME,
                     LOG_PREFIX + "sub period is set to NONE which is invalid"
@@ -323,7 +352,7 @@ class TaskCreationViewModel(
             initializer {
                 val savedStateHandle = createSavedStateHandle()
                 val appContainer = (this[APPLICATION_KEY] as MainApplication).getAppContainer()
-                TaskCreationViewModel(
+                TaskUpsertViewModel(
                     templateRepository = appContainer.repeatableTaskTemplateRepository,
                     recordRepository = appContainer.repeatableTaskRecordRepository,
                     realmHelper = appContainer.realmHelper,

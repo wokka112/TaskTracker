@@ -22,7 +22,7 @@ import com.floatingpanda.tasktracker.data.Period
 import java.util.stream.Collectors
 
 class UpsertTaskScheduleFragment : Fragment() {
-    private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
+    private val taskUpsertViewModel: TaskUpsertViewModel by activityViewModels { TaskUpsertViewModel.Factory }
     private lateinit var createButton: Button
 
     override fun onCreateView(
@@ -30,20 +30,20 @@ class UpsertTaskScheduleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_task_creation_schedule, container, false)
+        val view = inflater.inflate(R.layout.fragment_task_upsert_schedule, container, false)
         createButton = view.findViewById(R.id.create_button)
 
-        setupEditTexts(view, taskCreationViewModel)
-        setupSpinners(view, taskCreationViewModel)
-        setupEligibleDaysLogic(view, taskCreationViewModel)
-        setupSubPeriodEnabledLogic(view, taskCreationViewModel)
+        setupEditTexts(view, taskUpsertViewModel)
+        setupSpinners(view, taskUpsertViewModel)
+        setupEligibleDaysLogic(view, taskUpsertViewModel)
+        setupSubPeriodEnabledLogic(view, taskUpsertViewModel)
 
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             findNavController().navigateUp()
         }
         createButton.setOnClickListener {
             try {
-                taskCreationViewModel.createTask()
+                taskUpsertViewModel.createTask()
                 findNavController().navigate(R.id.nav_todos)
             } catch (e: Exception) {
                 Log.e("task creation", "Error creating task. Template creation failed")
@@ -55,7 +55,7 @@ class UpsertTaskScheduleFragment : Fragment() {
 
     private fun setupSubPeriodEnabledLogic(
         rootView: View,
-        taskCreationViewModel: TaskCreationViewModel
+        taskUpsertViewModel: TaskUpsertViewModel
     ) {
         val subPeriodEnabledCheckBox: CheckBox =
             rootView.findViewById(R.id.sub_period_enabled_checkbox)
@@ -64,7 +64,7 @@ class UpsertTaskScheduleFragment : Fragment() {
             rootView.findViewById(R.id.max_times_per_sub_period_input)
 
 
-        taskCreationViewModel.getIsSubPeriodEnabled().observe(this.viewLifecycleOwner) { enabled ->
+        taskUpsertViewModel.getIsSubPeriodEnabled().observe(this.viewLifecycleOwner) { enabled ->
             subPeriodSpinner.visibility = if (enabled) View.VISIBLE else View.GONE
             subPeriodSpinner.isEnabled = enabled
             timesPerSubPeriodInput.visibility = if (enabled) View.VISIBLE else View.GONE
@@ -73,10 +73,10 @@ class UpsertTaskScheduleFragment : Fragment() {
         }
 
         subPeriodEnabledCheckBox.setOnCheckedChangeListener { _, checked ->
-            taskCreationViewModel.setIsSubPeriodEnabled(checked)
+            taskUpsertViewModel.setIsSubPeriodEnabled(checked)
         }
 
-        taskCreationViewModel.getPeriod().observe(this.viewLifecycleOwner) { period ->
+        taskUpsertViewModel.getPeriod().observe(this.viewLifecycleOwner) { period ->
             if (period == Period.DAILY) {
                 subPeriodEnabledCheckBox.isChecked = false
                 subPeriodEnabledCheckBox.isEnabled = false
@@ -87,12 +87,12 @@ class UpsertTaskScheduleFragment : Fragment() {
     }
 
     private fun enableCreateButtonIfParametersValid() {
-        createButton.isEnabled = taskCreationViewModel.hasValidRecordScheduleDetails()
+        createButton.isEnabled = taskUpsertViewModel.hasValidRecordScheduleDetails()
     }
 
     private fun setupEligibleDaysLogic(
         rootView: View,
-        taskCreationViewModel: TaskCreationViewModel
+        taskUpsertViewModel: TaskUpsertViewModel
     ) {
         val mondayCheckBox: CheckBox = rootView.findViewById(R.id.days_checkbox_monday)
         val tuesdayCheckBox: CheckBox = rootView.findViewById(R.id.days_checkbox_tuesday)
@@ -104,70 +104,70 @@ class UpsertTaskScheduleFragment : Fragment() {
 
         mondayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.MONDAY)
+                taskUpsertViewModel.addEligibleDay(Day.MONDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.MONDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.MONDAY)
 
             enableCreateButtonIfParametersValid()
         }
         tuesdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.TUESDAY)
+                taskUpsertViewModel.addEligibleDay(Day.TUESDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.TUESDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.TUESDAY)
 
             enableCreateButtonIfParametersValid()
         }
         wednesdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.WEDNESDAY)
+                taskUpsertViewModel.addEligibleDay(Day.WEDNESDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.WEDNESDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.WEDNESDAY)
 
             enableCreateButtonIfParametersValid()
         }
         thursdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.THURSDAY)
+                taskUpsertViewModel.addEligibleDay(Day.THURSDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.THURSDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.THURSDAY)
 
             enableCreateButtonIfParametersValid()
         }
         fridayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.FRIDAY)
+                taskUpsertViewModel.addEligibleDay(Day.FRIDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.FRIDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.FRIDAY)
 
             enableCreateButtonIfParametersValid()
         }
         saturdayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.SATURDAY)
+                taskUpsertViewModel.addEligibleDay(Day.SATURDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.SATURDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.SATURDAY)
 
             enableCreateButtonIfParametersValid()
         }
         sundayCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked)
-                taskCreationViewModel.addEligibleDay(Day.SUNDAY)
+                taskUpsertViewModel.addEligibleDay(Day.SUNDAY)
             else
-                taskCreationViewModel.removeEligibleDay(Day.SUNDAY)
+                taskUpsertViewModel.removeEligibleDay(Day.SUNDAY)
 
             enableCreateButtonIfParametersValid()
         }
     }
 
-    private fun setupSpinners(rootView: View, taskCreationViewModel: TaskCreationViewModel) {
+    private fun setupSpinners(rootView: View, taskUpsertViewModel: TaskUpsertViewModel) {
         val periodSpinner: Spinner = rootView.findViewById(R.id.period_dropdown);
         val subPeriodSpinner: Spinner = rootView.findViewById(R.id.sub_period_dropdown);
 
         val periodAdapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            taskCreationViewModel.getValidPeriods().stream().map(Period::value).collect(
+            taskUpsertViewModel.getValidPeriods().stream().map(Period::value).collect(
                 Collectors.toList()
             )
         ).also { adapter ->
@@ -178,17 +178,17 @@ class UpsertTaskScheduleFragment : Fragment() {
         val validPeriodAdapter: ValidPeriodAdapter = ValidPeriodAdapter(
             requireContext(),
             android.R.layout.simple_spinner_item,
-            taskCreationViewModel.getValidPeriods(),
+            taskUpsertViewModel.getValidPeriods(),
             Period.getValidSubPeriods(Period.DAILY)
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             subPeriodSpinner.adapter = adapter
         }
-        taskCreationViewModel.getValidSubPeriods().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getValidSubPeriods().observe(this.viewLifecycleOwner) {
             validPeriodAdapter.setValidPeriods(it)
         }
 
-        taskCreationViewModel.getPeriod().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getPeriod().observe(this.viewLifecycleOwner) {
             val selectedPeriod = periodSpinner.selectedItem
             if (it != null && selectedPeriod != it)
                 periodSpinner.setSelection(periodAdapter.getPosition(it.value))
@@ -196,9 +196,9 @@ class UpsertTaskScheduleFragment : Fragment() {
             enableCreateButtonIfParametersValid()
         }
         periodSpinner.onItemSelectedListener =
-            PeriodSpinnerOnItemSelectedListener(taskCreationViewModel)
+            PeriodSpinnerOnItemSelectedListener(taskUpsertViewModel)
 
-        taskCreationViewModel.getSubPeriod().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getSubPeriod().observe(this.viewLifecycleOwner) {
             val selectedPeriod = subPeriodSpinner.selectedItem
             if (it != null && selectedPeriod != it)
                 subPeriodSpinner.setSelection(
@@ -210,15 +210,15 @@ class UpsertTaskScheduleFragment : Fragment() {
             enableCreateButtonIfParametersValid()
         }
         subPeriodSpinner.onItemSelectedListener =
-            SubPeriodSpinnerOnItemSelectedListener(taskCreationViewModel)
+            SubPeriodSpinnerOnItemSelectedListener(taskUpsertViewModel)
     }
 
-    private fun setupEditTexts(rootView: View, taskCreationViewModel: TaskCreationViewModel) {
+    private fun setupEditTexts(rootView: View, taskUpsertViewModel: TaskUpsertViewModel) {
         val timesPerPeriodInput: EditText = rootView.findViewById(R.id.times_per_period_input)
         val timesPerSubPeriodInput: EditText =
             rootView.findViewById(R.id.max_times_per_sub_period_input)
 
-        taskCreationViewModel.getTimesPerPeriod().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getTimesPerPeriod().observe(this.viewLifecycleOwner) {
             if (timesPerPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerPeriodInput.text.toString() != it.toString())
             ) {
@@ -229,12 +229,12 @@ class UpsertTaskScheduleFragment : Fragment() {
         }
         timesPerPeriodInput.doAfterTextChanged {
             if (it.toString().isBlank())
-                taskCreationViewModel.setTimesPerPeriod(0)
-            else if (taskCreationViewModel.getTimesPerPeriod().value != Integer.parseInt(it.toString()))
-                taskCreationViewModel.setTimesPerPeriod(Integer.parseInt(it.toString()))
+                taskUpsertViewModel.setTimesPerPeriod(0)
+            else if (taskUpsertViewModel.getTimesPerPeriod().value != Integer.parseInt(it.toString()))
+                taskUpsertViewModel.setTimesPerPeriod(Integer.parseInt(it.toString()))
         }
 
-        taskCreationViewModel.getMaxTimesPerSubPeriod().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getMaxTimesPerSubPeriod().observe(this.viewLifecycleOwner) {
             if (timesPerSubPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerSubPeriodInput.text.toString() != it.toString())
             ) {
@@ -245,17 +245,17 @@ class UpsertTaskScheduleFragment : Fragment() {
         }
         timesPerSubPeriodInput.doAfterTextChanged {
             if (it.toString().isBlank())
-                taskCreationViewModel.setMaxTimesPerSubPeriod(0)
-            else if (taskCreationViewModel.getMaxTimesPerSubPeriod().value != Integer.parseInt(it.toString()))
-                taskCreationViewModel.setMaxTimesPerSubPeriod(Integer.parseInt(it.toString()))
+                taskUpsertViewModel.setMaxTimesPerSubPeriod(0)
+            else if (taskUpsertViewModel.getMaxTimesPerSubPeriod().value != Integer.parseInt(it.toString()))
+                taskUpsertViewModel.setMaxTimesPerSubPeriod(Integer.parseInt(it.toString()))
         }
     }
 
-    class PeriodSpinnerOnItemSelectedListener(private val taskCreationViewModel: TaskCreationViewModel) :
+    class PeriodSpinnerOnItemSelectedListener(private val taskUpsertViewModel: TaskUpsertViewModel) :
         AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             parent?.getItemAtPosition(position).also { item ->
-                taskCreationViewModel.setPeriod(
+                taskUpsertViewModel.setPeriod(
                     Period.convertFromString(item.toString())
                 )
             }
@@ -265,11 +265,11 @@ class UpsertTaskScheduleFragment : Fragment() {
         }
     }
 
-    class SubPeriodSpinnerOnItemSelectedListener(private val taskCreationViewModel: TaskCreationViewModel) :
+    class SubPeriodSpinnerOnItemSelectedListener(private val taskUpsertViewModel: TaskUpsertViewModel) :
         AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             parent?.getItemAtPosition(position).also { item ->
-                taskCreationViewModel.setSubPeriod(
+                taskUpsertViewModel.setSubPeriod(
                     Period.convertFromString(item.toString())
                 )
             }

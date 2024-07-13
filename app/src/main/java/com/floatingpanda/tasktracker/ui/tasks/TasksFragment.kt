@@ -20,7 +20,7 @@ class TasksFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private val taskViewModel: TaskViewModel by viewModels<TaskViewModel> { TaskViewModel.Factory }
-    private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
+    private val taskUpsertViewModel: TaskUpsertViewModel by activityViewModels { TaskUpsertViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,9 +44,9 @@ class TasksFragment : Fragment() {
         }
 
         binding.root.findViewById<FloatingActionButton>(R.id.fab).setOnClickListener {
-            taskCreationViewModel.clear()
+            taskUpsertViewModel.clear()
             root.findNavController().navigate(
-                R.id.action_todo_fragment_to_task_creation_create_fragment,
+                R.id.action_tasks_fragment_to_task_upsert_details_fragment,
             )
         }
         return root

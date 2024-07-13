@@ -11,10 +11,13 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.floatingpanda.tasktracker.R
+import org.mongodb.kbson.BsonObjectId
+import org.mongodb.kbson.ObjectId
 
 class UpsertTaskDetailsFragment : Fragment() {
-    private val taskCreationViewModel: TaskCreationViewModel by activityViewModels { TaskCreationViewModel.Factory }
+    private val taskUpsertViewModel: TaskUpsertViewModel by activityViewModels { TaskUpsertViewModel.Factory }
 
     private lateinit var continueButton: Button
 
@@ -23,61 +26,68 @@ class UpsertTaskDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val taskArgs: UpsertTaskDetailsFragmentArgs by navArgs()
+        if (!taskArgs.taskIdHexString.isNullOrBlank()) {
+            val taskId: ObjectId =
+                BsonObjectId.invoke(taskArgs.taskIdHexString)
+            taskUpsertViewModel.populateTaskIfTaskNotPresent(taskId)
+        }
+
         val view = inflater.inflate(R.layout.fragment_task_creation_create, container, false)
         continueButton = view.findViewById(R.id.continue_button)
 
-        setupEditTexts(view, taskCreationViewModel)
+        setupEditTexts(view, taskUpsertViewModel)
 
         view.findViewById<Button>(R.id.cancel_button).setOnClickListener {
             findNavController().navigateUp()
         }
         continueButton.setOnClickListener {
-            findNavController().navigate(R.id.action_task_creation_create_fragment_to_task_creation_schedule_fragment)
+            findNavController().navigate(R.id.action_task_upsert_details_fragment_to_task_upsert_schedule_fragment)
         }
 
         return view
     }
 
-    private fun setupEditTexts(rootView: View, taskCreationViewModel: TaskCreationViewModel) {
+    private fun setupEditTexts(rootView: View, taskUpsertViewModel: TaskUpsertViewModel) {
         val titleInput: EditText = rootView.findViewById(R.id.title_input)
         val categoryInput: EditText = rootView.findViewById(R.id.category_input)
         val infoInput: EditText = rootView.findViewById(R.id.info_input)
 
-        taskCreationViewModel.getTitle().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getTitle().observe(this.viewLifecycleOwner) {
             if (titleInput.text == null || titleInput.text.toString() != it) {
                 titleInput.setText(it, TextView.BufferType.EDITABLE)
             }
             enableContinueButtonIfParametersValid()
         }
         titleInput.doAfterTextChanged {
-            if (!taskCreationViewModel.getTitle().value.equals(it?.toString())) {
-                taskCreationViewModel.setTitle(it.toString())
+            if (!taskUpsertViewModel.getTitle().value.equals(it?.toString())) {
+                taskUpsertViewModel.setTitle(it.toString())
             }
         }
 
-        taskCreationViewModel.getCategory().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getCategory().observe(this.viewLifecycleOwner) {
             if (categoryInput.text == null || categoryInput.text.toString() != it) {
                 categoryInput.setText(it, TextView.BufferType.EDITABLE)
             }
             enableContinueButtonIfParametersValid()
         }
         categoryInput.doAfterTextChanged {
-            if (!taskCreationViewModel.getCategory().value.equals(it?.toString())) {
-                taskCreationViewModel.setCategory(it.toString())
+            if (!taskUpsertViewModel.getCategory().value.equals(it?.toString())) {
+                taskUpsertViewModel.setCategory(it.toString())
             }
         }
 
-        taskCreationViewModel.getInfo().observe(this.viewLifecycleOwner) {
+        taskUpsertViewModel.getInfo().observe(this.viewLifecycleOwner) {
             if (infoInput.text == null || infoInput.text.toString() != it)
                 infoInput.setText(it, TextView.BufferType.EDITABLE)
         }
         infoInput.doAfterTextChanged {
-            if (!taskCreationViewModel.getInfo().value.equals(it?.toString()))
-                taskCreationViewModel.setInfo(it.toString())
+            if (!taskUpsertViewModel.getInfo().value.equals(it?.toString()))
+                taskUpsertViewModel.setInfo(it.toString())
         }
     }
 
     private fun enableContinueButtonIfParametersValid() {
-        continueButton.isEnabled = taskCreationViewModel.hasValidTemplateDetails()
+        continueButton.isEnabled = taskUpsertViewModel.hasValidTemplateDetails()
     }
 }
