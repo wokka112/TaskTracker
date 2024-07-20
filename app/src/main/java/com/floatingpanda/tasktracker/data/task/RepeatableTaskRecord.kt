@@ -1,34 +1,37 @@
 package com.floatingpanda.tasktracker.data.task
 
 import com.floatingpanda.tasktracker.data.Period
-import io.realm.kotlin.ext.realmDictionaryOf
-import io.realm.kotlin.types.RealmDictionary
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mongodb.kbson.BsonObjectId
 import org.mongodb.kbson.ObjectId
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.OffsetDateTime
 import java.time.temporal.ChronoField
 import java.util.Objects
+import java.util.stream.Collectors
 
+//TODO should we use local dates for start and end date? Or OffsetDateTime?
 class RepeatableTaskRecord(
     //TODO should this just be an id pointing to the latest template? Or will the template automatically update?
     // Actually it'd be best to keep them separate so you could see what the template was at the time?
-    var template: RepeatableTaskTemplate?,
+    var template: RepeatableTaskTemplate,
     startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
     endDate: LocalDate
 ) : RealmObject {
     constructor() : this(
-        null,
+        RepeatableTaskTemplate(),
         LocalDate.now(),
         LocalDate.now()
     ) // Empty constructor required by Realm
 
     @PrimaryKey
     var id: ObjectId = BsonObjectId()
-    var completionsPerDate: RealmDictionary<Int> = realmDictionaryOf()
+    var completionsInternal: RealmList<String> = realmListOf()
     var startDateInternal: String
     var endDateInternal: String
     var startDate: LocalDate
@@ -45,15 +48,27 @@ class RepeatableTaskRecord(
         set(date: LocalDate) {
             endDateInternal = date.toString()
         }
+    var completions: List<OffsetDateTime>
+        get() {
+            return completionsInternal.stream().map(OffsetDateTime::parse)
+                .collect(Collectors.toList())
+        }
+        set(completions: List<OffsetDateTime>) {
+            realmListOf(
+                completions.stream().map(OffsetDateTime::toString).collect(Collectors.toList())
+            )
+        }
 
     val isComplete: Boolean
-        get() = if (template == null) true else completionsPerDate.size >= template!!.timesPerPeriod
-    val title: String?
-        get() = template?.title
+        get() = completionsInternal.size >= template.timesPerPeriod
+    val title: String
+        get() = template.title
     val info: String?
-        get() = template?.info;
-    val category: String?
-        get() = template?.category
+        get() = template.info;
+    val category: String
+        get() = template.category
+    val repeatPeriod: Period
+        get() = template.repeatPeriod
 
 
     init {
@@ -61,63 +76,66 @@ class RepeatableTaskRecord(
         endDateInternal = endDate.toString()
     }
 
-
     fun getTimesLeftForSubPeriod(): Int {
-        if (template == null)
-            return -1
-
-        var timesLeft = template!!.maxTimesPerSubPeriod ?: template!!.timesPerPeriod
+        val timesLeft = template.maxTimesPerSubPeriod ?: template.timesPerPeriod
         return timesLeft - getCompletionsForSubPeriod()
     }
 
     fun getCompletionsForSubPeriod(): Int {
-        if (template == null)
-            return -1
-
-        return getCompletionsForPeriod(template!!.subRepeatPeriod ?: template!!.repeatPeriod)
+        return getCompletionsForPeriod(template.subRepeatPeriod ?: template.repeatPeriod)
     }
 
     fun isCompleteForSubPeriod(): Boolean {
-        if (isComplete || template == null)
+        if (isComplete)
             return true
 
-        var timesPerSubPeriod = template!!.maxTimesPerSubPeriod
+        var timesPerSubPeriod = template.maxTimesPerSubPeriod
         if (timesPerSubPeriod == null)
-            timesPerSubPeriod = template!!.timesPerPeriod
+            timesPerSubPeriod = template.timesPerPeriod
 
         return getCompletionsForSubPeriod() >= timesPerSubPeriod
     }
 
     fun doTaskOnce() {
-        val today = LocalDate.now()
-        val completionsForToday = completionsPerDate.getOrDefault(today.toString(), 0)
-        completionsPerDate[today.toString()] = completionsForToday + 1
+        completionsInternal.add(OffsetDateTime.now().toString())
     }
 
     private fun getCompletionsForPeriod(period: Period): Int {
-        var earlierDayInPeriod = datesFromStartOfPeriod(period)
-        val today = LocalDate.now()
+        val startOfPeriod = getOffsetDateTimeAtStartOfPeriod(period)
+        val now = OffsetDateTime.now()
 
-        var completionsInPeriod = 0;
-        do {
-            completionsInPeriod += completionsPerDate.getOrDefault(earlierDayInPeriod.toString(), 0)
-            earlierDayInPeriod = earlierDayInPeriod.plusDays(1)
-        } while (!earlierDayInPeriod.isAfter(today))
+        var completionsInPeriod = 0
+        for (completion: OffsetDateTime in completions) {
+            if (completion.isAfter(startOfPeriod) && completion.isBefore(now))
+                completionsInPeriod++
+        }
 
         return completionsInPeriod
     }
 
-    private fun datesFromStartOfPeriod(period: Period): LocalDate {
-        if (period == Period.WEEKLY) {
-            return LocalDate.now().with(
-                ChronoField.DAY_OF_WEEK,
-                DayOfWeek.MONDAY.getLong(ChronoField.DAY_OF_WEEK)
-            )
-        } else if (period == Period.MONTHLY) {
-            return LocalDate.now().withDayOfMonth(1)
+    private fun getOffsetDateTimeAtStartOfPeriod(period: Period): OffsetDateTime {
+        when (period) {
+            Period.WEEKLY -> {
+                return OffsetDateTime.now()
+                    .with(
+                        ChronoField.DAY_OF_WEEK,
+                        DayOfWeek.MONDAY.getLong(ChronoField.DAY_OF_WEEK)
+                    )
+                    .withHour(0).withMinute(0).withSecond(0)
+            }
+
+            Period.MONTHLY -> {
+                return OffsetDateTime.now().withDayOfMonth(1)
+                    .withHour(0).withMinute(0).withSecond(0)
+            }
+
+            Period.YEARLY -> {
+                return OffsetDateTime.now().withDayOfYear(1).withHour(0).withMinute(0).withSecond(0)
+            }
+
+            else -> return OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0)
         }
 
-        return LocalDate.now()
     }
 
     override fun equals(other: Any?): Boolean {
