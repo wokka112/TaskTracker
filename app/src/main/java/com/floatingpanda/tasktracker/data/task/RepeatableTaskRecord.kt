@@ -1,6 +1,8 @@
 package com.floatingpanda.tasktracker.data.task
 
 import com.floatingpanda.tasktracker.data.Period
+import com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletion
+import com.floatingpanda.tasktracker.ui.history.RecordCompletions
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
@@ -74,6 +76,33 @@ class RepeatableTaskRecord(
     init {
         startDateInternal = startDate.toString()
         endDateInternal = endDate.toString()
+    }
+
+    fun convertIntoRecordCompletions(): RecordCompletions {
+        return RecordCompletions(
+            id,
+            title,
+            repeatPeriod,
+            startDate,
+            completions.size,
+            template.timesPerPeriod
+        )
+    }
+
+    fun getIndividualRecordCompletions(): List<IndividualRecordCompletion> {
+        val individualCompletions = ArrayList<IndividualRecordCompletion>()
+        val recordCompletions = completions.sortedByDescending { it }
+        for (i in 0..recordCompletions.size)
+            individualCompletions.add(
+                IndividualRecordCompletion(
+                    id,
+                    title,
+                    repeatPeriod,
+                    i + 1,
+                    recordCompletions[i]
+                )
+            )
+        return individualCompletions
     }
 
     fun getTimesLeftForSubPeriod(): Int {

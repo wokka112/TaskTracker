@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.history.IndividualRecordCompletionHistoryFragment">
+
+    <TextView
+        android:id="@+id/individual_completion_history_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="32sp"
+        tools:text="Record Title"
+        android:textColor="@color/black"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/individual_completion_history_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/individual_completion_history_title"
+        app:layout_constraintLeft_toLeftOf="@id/individual_completion_history_title"
+        app:layout_constraintRight_toRightOf="@id/individual_completion_history_title"
+        android:textSize="20sp"
+        android:text="Completions"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/individual_completion_history_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/individual_completion_history_subtitle"
+        app:layout_constraintLeft_toLeftOf="@id/individual_completion_history_title"
+        app:layout_constraintRight_toRightOf="@id/individual_completion_history_title"
+        android:textSize="16sp"
+        tools:text="2024-10-04 - 2024-10-11" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/completion_history_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/individual_completion_history_date"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <TextView
+        android:id="@+id/no_completions_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No completions so far!"
+        app:layout_constraintTop_toBottomOf="@id/individual_completion_history_date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"
+        android:textSize="28sp"
+        android:visibility="invisible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -66,9 +66,9 @@
         app:layout_constraintTop_toTopOf="@id/individual_completion_record_period_header"
         app:layout_constraintRight_toRightOf="@id/individual_completion_date_time"
         app:layout_constraintLeft_toLeftOf="@id/individual_completion_date_time"
-        android:layout_marginRight="12dp"
+        android:layout_marginRight="20dp"
         android:textSize="14sp"
-        android:text="Completion:"
+        android:text="Completion Number:"
         android:maxLines="1"
         android:ellipsize="end"/>
 

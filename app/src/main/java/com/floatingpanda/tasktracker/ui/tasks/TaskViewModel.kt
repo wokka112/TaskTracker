@@ -9,8 +9,11 @@ import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.floatingpanda.tasktracker.MainApplication
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
+import com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletion
+import com.floatingpanda.tasktracker.ui.history.RecordCompletions
 import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
@@ -18,6 +21,7 @@ import org.mongodb.kbson.ObjectId
 
 class TaskViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,
+    private val recordRepository: RepeatableTaskRecordRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val templates: MutableLiveData<List<RepeatableTaskTemplate>> =
@@ -45,6 +49,10 @@ class TaskViewModel(
         return templateRepository.findTemplate(id)
     }
 
+    fun getRecordCompletionsForTemplate(templateId: ObjectId): List<RecordCompletions> {
+        return recordRepository.findRecordCompletionsForTemplate(templateId)
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -53,6 +61,7 @@ class TaskViewModel(
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MainApplication).getAppContainer()
                 TaskViewModel(
                     templateRepository = appContainer.repeatableTaskTemplateRepository,
+                    recordRepository = appContainer.repeatableTaskRecordRepository,
                     savedStateHandle = savedStateHandle
                 )
             }

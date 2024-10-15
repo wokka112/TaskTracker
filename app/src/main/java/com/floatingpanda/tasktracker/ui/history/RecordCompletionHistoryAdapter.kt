@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Period
-import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
+import java.time.LocalDate
 
 class RecordCompletionHistoryAdapter(
-    private val records: List<RepeatableTaskRecord>,
+    private val records: List<RecordCompletions>,
     private val navFunction: (id: String) -> Unit
 ) :
     RecyclerView.Adapter<RecordCompletionHistoryAdapter.ViewHolder>() {
@@ -48,25 +48,39 @@ class RecordCompletionHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val record = records.get(position)
-        holder.titleText.text = record.title
-        holder.periodText.text = record.repeatPeriod.value
+        val completions = records.get(position)
+        holder.titleText.text = completions.recordTitle
+        holder.periodText.text = completions.recordPeriod.toString()
         holder.completionNumberTextView.text =
-            record.completions.size.toString() + "/" + record.template.timesPerPeriod
-        holder.startDateText.text = record.startDate.toString()
-        holder.endDateText.text = record.endDate.toString()
+            completions.completions.toString() + "/" + completions.totalCompletions
+        holder.startDateText.text = completions.periodStartDate.toString()
+        holder.endDateText.text =
+            calculateEndDate(completions.periodStartDate, completions.recordPeriod).toString()
 
-        if (record.repeatPeriod == Period.DAILY) {
+        if (completions.recordPeriod == Period.DAILY) {
             holder.startDateText.visibility = View.INVISIBLE
             holder.endDateText.visibility = View.INVISIBLE
             holder.dateDelimiterText.visibility = View.INVISIBLE
-            holder.dailyDateText.text = record.startDate.toString()
+            holder.dailyDateText.text = completions.periodStartDate.toString()
             holder.dailyDateText.visibility = View.VISIBLE
         }
 
         holder.view.setOnClickListener {
-            navFunction(record.id.toHexString())
+            navFunction(completions.recordId.toHexString())
         }
+    }
+
+    private fun calculateEndDate(startDate: LocalDate, repeatPeriod: Period): LocalDate {
+        if (repeatPeriod == Period.DAILY)
+            return startDate;
+        if (repeatPeriod == Period.WEEKLY)
+            return startDate.plusWeeks(1)
+        if (repeatPeriod == Period.MONTHLY)
+            return startDate.plusMonths(1)
+        if (repeatPeriod == Period.YEARLY)
+            return startDate.plusYears(1)
+
+        return startDate
     }
 
     override fun getItemCount() = records.size

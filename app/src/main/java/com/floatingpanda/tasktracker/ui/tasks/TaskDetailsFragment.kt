@@ -13,6 +13,7 @@ import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.databinding.FragmentTaskDetailsBinding
+import com.floatingpanda.tasktracker.ui.history.RecordCompletionHistoryAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.mongodb.kbson.BsonObjectId
 import org.mongodb.kbson.ObjectId
@@ -24,7 +25,6 @@ class TaskDetailsFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private val taskViewModel: TaskViewModel by viewModels<TaskViewModel> { TaskViewModel.Factory }
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -97,10 +97,22 @@ class TaskDetailsFragment : Fragment() {
             val sunday = binding.daysCheckboxSunday
             sunday.isChecked = eligibleDays.contains(Day.SUNDAY)
 
+            val completionsList = binding.recordCompletionsList
+            completionsList.adapter =
+                RecordCompletionHistoryAdapter(taskViewModel.getRecordCompletionsForTemplate(task.id)) {
+                    val action =
+                        TaskDetailsFragmentDirections.actionTaskDetailsFragmentToIndividualRecordCompletionsFragment(
+                            id.toHexString()
+                        )
+                    root.findNavController().navigate(action)
+                }
+
             val editButton = binding.root.findViewById<FloatingActionButton>(R.id.fab);
             editButton.setOnClickListener {
                 val action =
-                    TaskDetailsFragmentDirections.actionTaskDetailsFragmentToTaskUpsertDetailsFragment(id.toHexString())
+                    TaskDetailsFragmentDirections.actionTaskDetailsFragmentToTaskUpsertDetailsFragment(
+                        id.toHexString()
+                    )
                 root.findNavController().navigate(action)
             }
         }

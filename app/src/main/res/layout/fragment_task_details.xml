@@ -232,6 +232,38 @@
             android:checked="true" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/record_completions_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/task_schedule_eligible_days_checkbox_group"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:text="Completions" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/record_completions_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/record_completions_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:id="@+id/record_completions_list_replacement_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No completions to record yet!"
+        app:layout_constraintTop_toTopOf="@id/record_completions_list"
+        app:layout_constraintLeft_toLeftOf="@id/record_completions_list"
+        app:layout_constraintRight_toRightOf="@id/record_completions_list"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:visibility="invisible" />
+
     <!--TODO change to a pencil icon button and put in top-right corner??? -->
     <include layout="@layout/edit_fab" />
 </androidx.constraintlayout.widget.ConstraintLayout>

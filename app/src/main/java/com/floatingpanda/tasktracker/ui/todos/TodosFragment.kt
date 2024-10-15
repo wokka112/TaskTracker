@@ -12,11 +12,12 @@ import androidx.recyclerview.widget.ConcatAdapter
 import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.databinding.FragmentTasksBinding
+import com.floatingpanda.tasktracker.databinding.FragmentTodosBinding
 import com.floatingpanda.tasktracker.ui.tasks.TaskUpsertViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TodosFragment : Fragment() {
-    private var _fragmentBinding: FragmentTasksBinding? = null
+    private var _fragmentBinding: FragmentTodosBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -29,11 +30,11 @@ class TodosFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _fragmentBinding = FragmentTasksBinding.inflate(inflater, container, false)
+        _fragmentBinding = FragmentTodosBinding.inflate(inflater, container, false)
 
         val root: View = binding.root
 
-        val recyclerView = binding.tasksList
+        val recyclerView = binding.todosList
 
         todoViewModel.getRecords().observe(
             this.viewLifecycleOwner
