@@ -59,6 +59,6 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
         android:textSize="28sp"
-        android:visibility="invisible"/>
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

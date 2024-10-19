@@ -29,19 +29,19 @@ class RecordCompletionHistoryFragment : Fragment() {
 
         val recyclerView = binding.completionHistoryList
 
-//        recordCompletionHistoryViewModel.getRecordCompletions().observe(
-//            this.viewLifecycleOwner
-//        ) { recordCompletions: List<RecordCompletions> ->
-//            if (recordCompletions.isNotEmpty())
-//                recyclerView.adapter = RecordCompletionHistoryAdapter(recordCompletions) { id ->
-//                    val action =
-//                        .actionRecordCompletionsToIndividualRecordCompletionFragment(
-//                            id
-//                        )
-//                    root.findNavController().navigate(action)
-//                }
-//        }
-//
+        recordCompletionHistoryViewModel.getRecordCompletions().observe(
+            this.viewLifecycleOwner
+        ) { recordCompletions: List<RecordCompletions> ->
+            if (recordCompletions.isNotEmpty())
+                recyclerView.adapter = RecordCompletionHistoryAdapter(recordCompletions) { taskId ->
+                    val action =
+                        RecordCompletionHistoryFragmentDirections.actionRecordCompletionsFragmentToIndividualRecordCompletionsFragment(
+                            taskId
+                        )
+                    root.findNavController().navigate(action)
+                }
+        }
+
         return root
     }
 

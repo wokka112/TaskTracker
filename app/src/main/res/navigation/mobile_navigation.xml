@@ -65,20 +65,21 @@
 
     <fragment
         android:id="@+id/nav_record_completion_history"
-        android:name="com.floatingpanda.tasktracker.ui.tasks.TaskDetailsFragment"
+        android:name="com.floatingpanda.tasktracker.ui.history.RecordCompletionHistoryFragment"
         android:label="Task Details"
         tools:layout="@layout/fragment_record_completion_history">
-        <argument
-            android:name="taskIdHexString"
-            app:argType="string" />
         <action
-            android:id="@+id/action_all_record_completions_fragment_to_individual_record_completions_fragment"
+            android:id="@+id/action_record_completions_fragment_to_individual_record_completions_fragment"
             app:destination="@id/nav_individual_record_completions" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_individual_record_completions"
-        android:name="com.floatingpanda.tasktracker.ui.tasks.TaskDetailsFragment"
+        android:name="com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletionHistoryFragment"
         android:label="Task Details"
-        tools:layout="@layout/fragment_individual_record_completion_history" />
+        tools:layout="@layout/fragment_individual_record_completion_history">
+        <argument
+            android:name="taskIdHexString"
+            app:argType="string" />
+    </fragment>
 </navigation>
