@@ -10,6 +10,7 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.UpdatePolicy
 import java.time.LocalDate
+import java.time.OffsetTime
 
 class MainApplication : Application() {
     private lateinit var appContainer: AppContainer
@@ -41,6 +42,10 @@ class MainApplication : Application() {
     }
 
     private fun createTestRecords(templates: List<RepeatableTaskTemplate>): List<RepeatableTaskRecord> {
+        val lastMonth = LocalDate.now().minusMonths(1)
+        val lastMonthDayOfWeek = lastMonth.dayOfWeek.value
+        val weekLaterThanLastMonth = lastMonth.plusDays((7 - (lastMonthDayOfWeek - 1)).toLong())
+        val twoWeeksLaterThanLastMonth = weekLaterThanLastMonth.plusWeeks(1)
         val today = LocalDate.now()
         val tomorrow = today.plusDays(1)
         val dayOfWeek = today.dayOfWeek.value
@@ -66,6 +71,20 @@ class MainApplication : Application() {
         val breakFromWorkTemplate =
             templates.stream().filter { it.title.equals("Take a break from work") }.findAny().get()
 
+        val oldestRunRecord = RepeatableTaskRecord(runTemplate, lastMonth, weekLaterThanLastMonth)
+        oldestRunRecord.completions = listOf(
+            lastMonth.atTime(OffsetTime.now()),
+            lastMonth.plusDays(1).atTime(OffsetTime.now())
+        )
+
+        val oldRunRecord =
+            RepeatableTaskRecord(runTemplate, weekLaterThanLastMonth, twoWeeksLaterThanLastMonth)
+        oldRunRecord.completions = listOf(
+            weekLaterThanLastMonth.atTime(OffsetTime.now()),
+            weekLaterThanLastMonth.plusDays(3).atTime(OffsetTime.now()),
+            weekLaterThanLastMonth.plusDays(6).atTime(OffsetTime.now())
+        )
+
         val wakeUpRecord = RepeatableTaskRecord(wakeUpTemplate, today, tomorrow)
         val stretchRecord = RepeatableTaskRecord(stretchTemplate, today, tomorrow)
         val ocdGroupRecord = RepeatableTaskRecord(ocdGroupTemplate, today, nextWeek)
@@ -86,6 +105,8 @@ class MainApplication : Application() {
             stretchRecord,
             ocdGroupRecord,
             runRecord,
+            oldRunRecord,
+            oldestRunRecord,
             readRecord,
             walkRecord,
             exploreWildernessRecord,
