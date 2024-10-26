@@ -13,7 +13,7 @@ import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Day
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.databinding.FragmentTaskDetailsBinding
-import com.floatingpanda.tasktracker.ui.history.RecordCompletionHistoryAdapter
+import com.floatingpanda.tasktracker.ui.history.TaskCompletionHistoryAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.mongodb.kbson.BsonObjectId
 import org.mongodb.kbson.ObjectId
@@ -99,7 +99,7 @@ class TaskDetailsFragment : Fragment() {
 
             val completionsList = binding.recordCompletionsList
             completionsList.adapter =
-                RecordCompletionHistoryAdapter(taskViewModel.getRecordCompletionsForTemplate(task.id)) {
+                TaskCompletionHistoryAdapter(taskViewModel.getRecordCompletionsForTemplate(task.id)) {
                     val action =
                         TaskDetailsFragmentDirections.actionTaskDetailsFragmentToIndividualRecordCompletionsFragment(
                             id.toHexString()

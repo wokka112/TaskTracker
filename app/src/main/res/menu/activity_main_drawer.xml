@@ -15,7 +15,7 @@
             android:title="Templates" />
 
         <item
-            android:id="@+id/nav_record_completion_history"
+            android:id="@+id/nav_task_completion_history_selection"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Completions History" />
     </group>

@@ -64,10 +64,23 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_record_completion_history"
-        android:name="com.floatingpanda.tasktracker.ui.history.RecordCompletionHistoryFragment"
-        android:label="Task Details"
-        tools:layout="@layout/fragment_record_completion_history">
+        android:id="@+id/nav_task_completion_history_selection"
+        android:name="com.floatingpanda.tasktracker.ui.history.TaskCompletionHistorySelectionFragment"
+        android:label="Task Completion History Selection"
+        tools:layout="@layout/fragment_task_completion_history_selection">
+        <action
+            android:id="@+id/action_task_completion_history_selection_fragment_to_task_completion_history_fragment"
+            app:destination="@id/nav_task_completion_history" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_task_completion_history"
+        android:name="com.floatingpanda.tasktracker.ui.history.TaskCompletionHistoryFragment"
+        android:label="Task Completion History"
+        tools:layout="@layout/fragment_task_completion_history">
+        <argument
+            android:name="taskIdHexString"
+            app:argType="string" />
         <action
             android:id="@+id/action_record_completions_fragment_to_individual_record_completions_fragment"
             app:destination="@id/nav_individual_record_completions" />
@@ -76,7 +89,7 @@
     <fragment
         android:id="@+id/nav_individual_record_completions"
         android:name="com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletionHistoryFragment"
-        android:label="Task Details"
+        android:label="Individual Record Completions"
         tools:layout="@layout/fragment_individual_record_completion_history">
         <argument
             android:name="taskIdHexString"

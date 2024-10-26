@@ -4,7 +4,7 @@ import com.floatingpanda.tasktracker.data.Period
 import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 
-data class RecordCompletions(
+data class TaskRecordCompletions(
     val recordId: ObjectId,
     val recordTitle: String,
     val recordPeriod: Period,

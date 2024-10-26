@@ -2,7 +2,7 @@ package com.floatingpanda.tasktracker.data.task
 
 import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletion
-import com.floatingpanda.tasktracker.ui.history.RecordCompletions
+import com.floatingpanda.tasktracker.ui.history.TaskRecordCompletions
 import io.realm.kotlin.ext.realmListOf
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
@@ -16,11 +16,8 @@ import java.time.temporal.ChronoField
 import java.util.Objects
 import java.util.stream.Collectors
 
-//TODO should we use local dates for start and end date? Or OffsetDateTime?
 class RepeatableTaskRecord(
-    //TODO should this just be an id pointing to the latest template? Or will the template automatically update?
-    // Actually it'd be best to keep them separate so you could see what the template was at the time?
-    var template: RepeatableTaskTemplate,
+    template: RepeatableTaskTemplate,
     startDate: LocalDate,
     // TODO endDate seems unnecessary, we can calculate that
     endDate: LocalDate
@@ -33,9 +30,40 @@ class RepeatableTaskRecord(
 
     @PrimaryKey
     var id: ObjectId = BsonObjectId()
+    var templateId: ObjectId = template.id
+    var templateTitle: String = template.title
+    var templateInfo: String? = template.info
+    var templateCategory: String = template.category
+    var targetCompletionsPerRepeatPeriod: Int = template.timesPerPeriod
+    var maxCompletionsPerSubPeriod: Int? = template.maxTimesPerSubPeriod
     var completionsInternal: RealmList<String> = realmListOf()
-    var startDateInternal: String
-    var endDateInternal: String
+    private var startDateInternal: String
+    private var endDateInternal: String
+    private var repeatPeriodInternal: String = template.repeatPeriod.value
+    private var subPeriodInternal: String? = template.subRepeatPeriod?.value
+    var repeatPeriod: Period
+        get() {
+            return try {
+                Period.valueOf(repeatPeriodInternal)
+            } catch (e: Exception) {
+                //TODO should we be doing this???
+                Period.DAILY
+            }
+        }
+        set(period: Period) {
+            repeatPeriodInternal = period.value
+        }
+    var subPeriod: Period?
+        get() {
+            return try {
+                Period.valueOf(repeatPeriodInternal)
+            } catch (e: Exception) {
+                null
+            }
+        }
+        set(period: Period?) {
+            subPeriodInternal = period?.value
+        }
     var startDate: LocalDate
         get() {
             return LocalDate.parse(startDateInternal)
@@ -62,30 +90,21 @@ class RepeatableTaskRecord(
         }
 
     val isComplete: Boolean
-        get() = completionsInternal.size >= template.timesPerPeriod
-    val title: String
-        get() = template.title
-    val info: String?
-        get() = template.info;
-    val category: String
-        get() = template.category
-    val repeatPeriod: Period
-        get() = template.repeatPeriod
-
+        get() = completionsInternal.size >= targetCompletionsPerRepeatPeriod
 
     init {
         startDateInternal = startDate.toString()
         endDateInternal = endDate.toString()
     }
 
-    fun convertIntoRecordCompletions(): RecordCompletions {
-        return RecordCompletions(
+    fun convertIntoRecordCompletions(): TaskRecordCompletions {
+        return TaskRecordCompletions(
             id,
-            title,
+            templateTitle,
             repeatPeriod,
             startDate,
             completions.size,
-            template.timesPerPeriod
+            targetCompletionsPerRepeatPeriod
         )
     }
 
@@ -96,7 +115,7 @@ class RepeatableTaskRecord(
             individualCompletions.add(
                 IndividualRecordCompletion(
                     id,
-                    title,
+                    templateTitle,
                     repeatPeriod,
                     i + 1,
                     recordCompletions[i]
@@ -106,21 +125,21 @@ class RepeatableTaskRecord(
     }
 
     fun getTimesLeftForSubPeriod(): Int {
-        val timesLeft = template.maxTimesPerSubPeriod ?: template.timesPerPeriod
+        val timesLeft = maxCompletionsPerSubPeriod ?: targetCompletionsPerRepeatPeriod
         return timesLeft - getCompletionsForSubPeriod()
     }
 
     fun getCompletionsForSubPeriod(): Int {
-        return getCompletionsForPeriod(template.subRepeatPeriod ?: template.repeatPeriod)
+        return getCompletionsForPeriod(subPeriod ?: repeatPeriod)
     }
 
     fun isCompleteForSubPeriod(): Boolean {
         if (isComplete)
             return true
 
-        var timesPerSubPeriod = template.maxTimesPerSubPeriod
+        var timesPerSubPeriod = maxCompletionsPerSubPeriod
         if (timesPerSubPeriod == null)
-            timesPerSubPeriod = template.timesPerPeriod
+            timesPerSubPeriod = targetCompletionsPerRepeatPeriod
 
         return getCompletionsForSubPeriod() >= timesPerSubPeriod
     }
@@ -174,12 +193,29 @@ class RepeatableTaskRecord(
         if (other !is RepeatableTaskRecord)
             return false
 
-        return other.template == this.template
+        return other.templateId == this.templateId
+                && other.targetCompletionsPerRepeatPeriod == this.targetCompletionsPerRepeatPeriod
+                && other.repeatPeriod == this.repeatPeriod
+                && other.subPeriod == this.subPeriod
+                && other.maxCompletionsPerSubPeriod == this.maxCompletionsPerSubPeriod
+                && other.templateTitle == this.templateTitle
+                && other.templateCategory == this.templateCategory
+                && other.templateInfo == this.templateInfo
                 && other.startDate == this.startDate
                 && other.endDate == this.endDate
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(template, startDate, endDate)
+        return Objects.hash(
+            templateId,
+            targetCompletionsPerRepeatPeriod,
+            repeatPeriod,
+            subPeriod,
+            maxCompletionsPerSubPeriod,
+            templateTitle,
+            templateInfo,
+            startDate,
+            endDate
+        )
     }
 }

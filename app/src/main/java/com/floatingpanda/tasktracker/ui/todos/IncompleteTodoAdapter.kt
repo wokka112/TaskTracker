@@ -38,7 +38,7 @@ class IncompleteTodoAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val record = incompleteRecords.get(position)
-        holder.taskText.text = record.title
+        holder.taskText.text = record.templateTitle
 
         val checkBox = holder.completeCheckBox
         val checkBoxSuperscript = holder.completionsLeftSuperScript

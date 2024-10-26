@@ -12,8 +12,7 @@ import com.floatingpanda.tasktracker.MainApplication
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
-import com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletion
-import com.floatingpanda.tasktracker.ui.history.RecordCompletions
+import com.floatingpanda.tasktracker.ui.history.TaskRecordCompletions
 import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
@@ -49,7 +48,7 @@ class TaskViewModel(
         return templateRepository.findTemplate(id)
     }
 
-    fun getRecordCompletionsForTemplate(templateId: ObjectId): List<RecordCompletions> {
+    fun getRecordCompletionsForTemplate(templateId: ObjectId): List<TaskRecordCompletions> {
         return recordRepository.findRecordCompletionsForTemplate(templateId)
     }
 

@@ -1,7 +1,7 @@
 package com.floatingpanda.tasktracker.data.task
 
 import android.util.Log
-import com.floatingpanda.tasktracker.ui.history.RecordCompletions
+import com.floatingpanda.tasktracker.ui.history.TaskRecordCompletions
 import io.realm.kotlin.MutableRealm
 import io.realm.kotlin.Realm
 import io.realm.kotlin.ext.query
@@ -23,7 +23,7 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
         return realm.query<RepeatableTaskRecord>("id == $0", id).find().getOrNull(0)
     }
 
-    fun findRecordCompletionsForTemplate(templateId: ObjectId): List<RecordCompletions> {
+    fun findRecordCompletionsForTemplate(templateId: ObjectId): List<TaskRecordCompletions> {
         return realm.query<RepeatableTaskRecord>("template.id == $0", templateId).find().map { it ->
             it.convertIntoRecordCompletions()
         }
@@ -48,7 +48,7 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
                 "id == $0",
                 record.id
             ).find().first()
-            liveRecord.template = record.template
+            //TODO fix up updating record
             liveRecord.startDate = record.startDate
             liveRecord.endDate = record.endDate
             liveRecord.completions = record.completions

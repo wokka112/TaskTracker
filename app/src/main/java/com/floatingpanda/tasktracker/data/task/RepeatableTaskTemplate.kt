@@ -39,6 +39,7 @@ class RepeatableTaskTemplate() : RealmObject {
             return try {
                 Period.valueOf(repeatPeriodInternal)
             } catch (e: Exception) {
+                //TODO should we be doing this???
                 Period.DAILY
             }
         }

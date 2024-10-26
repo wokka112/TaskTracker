@@ -9,11 +9,11 @@ import com.floatingpanda.tasktracker.R
 import com.floatingpanda.tasktracker.data.Period
 import java.time.LocalDate
 
-class RecordCompletionHistoryAdapter(
-    private val records: List<RecordCompletions>,
+class TaskCompletionHistoryAdapter(
+    private val records: List<TaskRecordCompletions>,
     private val navFunction: (id: String) -> Unit
 ) :
-    RecyclerView.Adapter<RecordCompletionHistoryAdapter.ViewHolder>() {
+    RecyclerView.Adapter<TaskCompletionHistoryAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val view: View
         val titleText: TextView

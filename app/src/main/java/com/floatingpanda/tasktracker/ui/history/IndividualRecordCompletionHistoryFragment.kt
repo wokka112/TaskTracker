@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.floatingpanda.tasktracker.databinding.FragmentIndividualRecordCompletionHistoryBinding
-import com.floatingpanda.tasktracker.ui.tasks.TaskDetailsFragmentArgs
 import org.mongodb.kbson.BsonObjectId
 import org.mongodb.kbson.ObjectId
 
@@ -19,7 +18,7 @@ class IndividualRecordCompletionHistoryFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _fragmentBinding!!
-    private val recordCompletionHistoryViewModel: RecordCompletionHistoryViewModel by viewModels<RecordCompletionHistoryViewModel> { RecordCompletionHistoryViewModel.Factory }
+    private val taskCompletionHistoryViewModel: TaskCompletionHistoryViewModel by viewModels<TaskCompletionHistoryViewModel> { TaskCompletionHistoryViewModel.Factory }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,11 +30,10 @@ class IndividualRecordCompletionHistoryFragment : Fragment() {
 
         val root: View = binding.root
 
-        val args: TaskDetailsFragmentArgs by navArgs()
+        val args: IndividualRecordCompletionHistoryFragmentArgs by navArgs()
         val id: ObjectId = BsonObjectId.invoke(args.taskIdHexString)
 
-        val record = recordCompletionHistoryViewModel.getRecord(id)
-
+        val record = taskCompletionHistoryViewModel.getRecord(id)
 
         if (record == null) {
             val title = binding.individualCompletionHistoryTitle
@@ -43,13 +41,13 @@ class IndividualRecordCompletionHistoryFragment : Fragment() {
 
             Log.e("onCreateView", "Unable to find record for $id")
         } else {
-            binding.individualCompletionHistoryTitle.text = record.title
+            binding.individualCompletionHistoryTitle.text = record.templateTitle
             binding.individualCompletionHistoryDate.text =
                 record.startDate.toString() + " - " + record.endDate.toString()
 
             val completions = record.getIndividualRecordCompletions()
             if (completions.isNotEmpty()) {
-                val recyclerView = binding.completionHistoryList
+                val recyclerView = binding.taskCompletionHistoryList
                 recyclerView.adapter = IndividualRecordCompletionHistoryAdapter(completions)
                 binding.noCompletionsText.visibility = View.INVISIBLE
             } else {
