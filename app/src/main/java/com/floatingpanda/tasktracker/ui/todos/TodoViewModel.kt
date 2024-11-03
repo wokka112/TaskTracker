@@ -25,14 +25,15 @@ class TodoViewModel(
         MutableLiveData<List<RepeatableTaskRecord>>(listOf())
 
     init {
-        recordRepository.observeRecords { changes: ResultsChange<RepeatableTaskRecord> ->
+        //TODO is this filtering gonna cause performance issues over time?
+        recordRepository.observeRecords() { changes: ResultsChange<RepeatableTaskRecord> ->
             when (changes) {
                 is InitialResults -> {
-                    records.postValue(changes.list)
+                    records.postValue(changes.list.filter { r -> r.isActive })
                 }
 
                 is UpdatedResults -> {
-                    records.postValue(changes.list)
+                    records.postValue(changes.list.filter { r -> r.isActive })
                 }
 
                 else -> {}

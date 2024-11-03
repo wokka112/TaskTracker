@@ -22,7 +22,8 @@
         tools:layout="@layout/fragment_task_creation_create">
         <argument
             android:name="taskIdHexString"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="" />
         <action
             android:id="@+id/action_task_upsert_details_fragment_to_task_upsert_schedule_fragment"
             app:destination="@id/nav_task_upsert_schedule" />

@@ -222,7 +222,7 @@ class UpsertTaskScheduleFragment : Fragment() {
             if (timesPerPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerPeriodInput.text.toString() != it.toString())
             ) {
-                timesPerPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
+                timesPerPeriodInput.setText(it?.toString(), TextView.BufferType.EDITABLE)
             }
 
             enableCreateButtonIfParametersValid()
@@ -238,7 +238,7 @@ class UpsertTaskScheduleFragment : Fragment() {
             if (timesPerSubPeriodInput.text == null || (timesPerPeriodInput.text.toString()
                     .isNotBlank() && timesPerSubPeriodInput.text.toString() != it.toString())
             ) {
-                timesPerSubPeriodInput.setText(it.toString(), TextView.BufferType.EDITABLE)
+                timesPerSubPeriodInput.setText(it?.toString(), TextView.BufferType.EDITABLE)
             }
 
             enableCreateButtonIfParametersValid()

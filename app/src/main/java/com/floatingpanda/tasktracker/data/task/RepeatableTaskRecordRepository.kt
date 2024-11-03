@@ -24,7 +24,7 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
     }
 
     fun findRecordCompletionsForTemplate(templateId: ObjectId): List<TaskRecordCompletions> {
-        return realm.query<RepeatableTaskRecord>("template.id == $0", templateId).find().map { it ->
+        return realm.query<RepeatableTaskRecord>("templateId == $0", templateId).find().map { it ->
             it.convertIntoRecordCompletions()
         }
     }

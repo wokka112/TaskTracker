@@ -93,6 +93,10 @@ class RepeatableTaskRecord(
     val isComplete: Boolean
         get() = completionsInternal.size >= targetCompletionsPerRepeatPeriod
 
+    // A record is active if we have not gone past its end date
+    val isActive: Boolean
+        get() = !LocalDate.now().isAfter(endDate)
+
     init {
         startDateInternal = startDate.toString()
         endDateInternal = endDate.toString()
