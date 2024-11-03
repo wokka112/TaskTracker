@@ -48,7 +48,14 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
                 "id == $0",
                 record.id
             ).find().first()
-            //TODO fix up updating record
+            liveRecord.repeatPeriod = record.repeatPeriod
+            liveRecord.targetCompletionsPerRepeatPeriod = record.targetCompletionsPerRepeatPeriod
+            liveRecord.subPeriod = record.subPeriod
+            liveRecord.maxCompletionsPerSubPeriod = record.maxCompletionsPerSubPeriod
+            liveRecord.templateTitle = record.templateTitle
+            liveRecord.templateInfo = record.templateInfo
+            liveRecord.templateCategory = record.templateCategory
+            liveRecord.templateId = record.templateId
             liveRecord.startDate = record.startDate
             liveRecord.endDate = record.endDate
             liveRecord.completions = record.completions

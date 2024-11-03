@@ -42,7 +42,11 @@ class TaskCompletionHistoryAdapter(
     ): ViewHolder {
         val view =
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_individual_record_completion, parent, false)
+                .inflate(
+                    R.layout.list_item_task_completion_history_record_completion,
+                    parent,
+                    false
+                )
 
         return ViewHolder(view)
     }

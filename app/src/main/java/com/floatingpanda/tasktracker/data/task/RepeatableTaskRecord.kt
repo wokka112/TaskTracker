@@ -4,6 +4,7 @@ import com.floatingpanda.tasktracker.data.Period
 import com.floatingpanda.tasktracker.ui.history.IndividualRecordCompletion
 import com.floatingpanda.tasktracker.ui.history.TaskRecordCompletions
 import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.ext.toRealmList
 import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.annotations.PrimaryKey
@@ -36,7 +37,7 @@ class RepeatableTaskRecord(
     var templateCategory: String = template.category
     var targetCompletionsPerRepeatPeriod: Int = template.timesPerPeriod
     var maxCompletionsPerSubPeriod: Int? = template.maxTimesPerSubPeriod
-    var completionsInternal: RealmList<String> = realmListOf()
+    private var completionsInternal: RealmList<String> = realmListOf()
     private var startDateInternal: String
     private var endDateInternal: String
     private var repeatPeriodInternal: String = template.repeatPeriod.value
@@ -84,9 +85,9 @@ class RepeatableTaskRecord(
                 .collect(Collectors.toList())
         }
         set(completions: List<OffsetDateTime>) {
-            realmListOf(
+            completionsInternal =
                 completions.stream().map(OffsetDateTime::toString).collect(Collectors.toList())
-            )
+                    .toRealmList()
         }
 
     val isComplete: Boolean
