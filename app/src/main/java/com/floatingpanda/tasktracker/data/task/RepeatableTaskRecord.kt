@@ -115,8 +115,8 @@ class RepeatableTaskRecord(
 
     fun getIndividualRecordCompletions(): List<IndividualRecordCompletion> {
         val individualCompletions = ArrayList<IndividualRecordCompletion>()
-        val recordCompletions = completions.sortedByDescending { it }
-        for (i in 0..recordCompletions.size)
+        val recordCompletions = completions
+        for (i in recordCompletions.indices)
             individualCompletions.add(
                 IndividualRecordCompletion(
                     id,
@@ -126,7 +126,7 @@ class RepeatableTaskRecord(
                     recordCompletions[i]
                 )
             )
-        return individualCompletions
+        return individualCompletions.sortedByDescending { it.completionDateTime }
     }
 
     fun getTimesLeftForSubPeriod(): Int {
