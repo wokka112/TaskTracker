@@ -22,7 +22,8 @@ class SimpleLinkAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_simple_link, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_simple_link, parent, false)
 
         return ViewHolder(view)
     }
@@ -38,5 +39,5 @@ class SimpleLinkAdapter(
         }
     }
 
-    override fun getItemCount() = 1
+    override fun getItemCount() = linkTextsAndArguments.size
 }
