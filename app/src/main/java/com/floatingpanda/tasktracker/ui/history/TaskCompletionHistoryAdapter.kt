@@ -1,5 +1,6 @@
 package com.floatingpanda.tasktracker.ui.history
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,7 @@ import com.floatingpanda.tasktracker.data.Period
 import java.time.LocalDate
 
 class TaskCompletionHistoryAdapter(
-    private val records: List<TaskRecordCompletions>,
+    private val recordCompletions: List<TaskRecordCompletions>,
     private val navFunction: (id: String) -> Unit
 ) :
     RecyclerView.Adapter<TaskCompletionHistoryAdapter.ViewHolder>() {
@@ -52,7 +53,7 @@ class TaskCompletionHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val completions = records.get(position)
+        val completions = recordCompletions.get(position)
         holder.titleText.text = completions.recordTitle
         holder.periodText.text = completions.recordPeriod.toString()
         holder.completionNumberTextView.text =
@@ -87,5 +88,5 @@ class TaskCompletionHistoryAdapter(
         return startDate
     }
 
-    override fun getItemCount() = records.size
+    override fun getItemCount() = recordCompletions.size
 }
