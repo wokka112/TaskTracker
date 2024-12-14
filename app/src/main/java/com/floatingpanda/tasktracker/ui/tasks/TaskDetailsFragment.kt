@@ -36,45 +36,45 @@ class TaskDetailsFragment : Fragment() {
         val root: View = binding.root
         val id: ObjectId =
             BsonObjectId.invoke(taskArgs.taskIdHexString)
-        val task: RepeatableTaskTemplate? = taskViewModel.getTemplate(id)
+        val template: RepeatableTaskTemplate? = taskViewModel.getTemplate(id)
 
-        if (task == null) {
+        if (template == null) {
             val title = binding.taskTitle
             title.text = "ERROR: NO TASK FOUND"
 
             Log.e("onCreateView", "Unable to find task for $id")
         } else {
             val title = binding.taskTitle
-            title.text = task.title
+            title.text = template.title
 
             val category = binding.taskCategory
-            category.text = task.category
+            category.text = template.category
 
             val info = binding.taskInfo
-            if (task.info == null)
+            if (template.info == null)
                 info.visibility = View.INVISIBLE
             else
-                info.text = task.info
+                info.text = template.info
 
             val period = binding.taskSchedulePeriod
-            period.text = task.repeatPeriod.value
+            period.text = template.repeatPeriod.value
 
             val timesPerPeriod = binding.taskScheduleTimesPerPeriod
-            timesPerPeriod.text = task.timesPerPeriod.toString()
+            timesPerPeriod.text = template.timesPerPeriod.toString()
 
             val subPeriod = binding.taskScheduleSubPeriod
-            if (task.subRepeatPeriod == null)
+            if (template.subRepeatPeriod == null)
                 subPeriod.setText("None")
             else
-                subPeriod.setText(task.subRepeatPeriod!!.value)
+                subPeriod.setText(template.subRepeatPeriod!!.value)
 
             val timesPerSubPeriod = binding.taskScheduleTimesPerSubPeriod
-            if (task.maxTimesPerSubPeriod == null)
+            if (template.maxTimesPerSubPeriod == null)
                 timesPerSubPeriod.text = "0"
             else
-                timesPerSubPeriod.text = task.maxTimesPerSubPeriod!!.toString()
+                timesPerSubPeriod.text = template.maxTimesPerSubPeriod!!.toString()
 
-            val eligibleDays = task.eligibleDays
+            val eligibleDays = template.eligibleDays
 
             val monday = binding.daysCheckboxMonday
             monday.isChecked = eligibleDays.contains(Day.MONDAY)
@@ -99,10 +99,10 @@ class TaskDetailsFragment : Fragment() {
 
             val completionsList = binding.recordCompletionsList
             completionsList.adapter =
-                TaskCompletionHistoryAdapter(taskViewModel.getRecordCompletionsForTemplate(task.id)) {
+                TaskCompletionHistoryAdapter(taskViewModel.getRecordCompletionsForTemplate(template.id)) {
                     val action =
                         TaskDetailsFragmentDirections.actionTaskDetailsFragmentToIndividualRecordCompletionsFragment(
-                            id.toHexString()
+                            it
                         )
                     root.findNavController().navigate(action)
                 }
