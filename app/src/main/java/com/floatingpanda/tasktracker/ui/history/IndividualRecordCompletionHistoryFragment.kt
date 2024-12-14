@@ -44,6 +44,8 @@ class IndividualRecordCompletionHistoryFragment : Fragment() {
             binding.individualCompletionHistoryTitle.text = record.templateTitle
             binding.individualCompletionHistoryDate.text =
                 record.startDate.toString() + " - " + record.endDate.toString()
+            binding.targetCompletionsValue.text = record.targetCompletionsPerRepeatPeriod.toString()
+            binding.periodValue.text = record.repeatPeriod.value
 
             val completions = record.getIndividualRecordCompletions()
             if (completions.isNotEmpty()) {
@@ -52,6 +54,7 @@ class IndividualRecordCompletionHistoryFragment : Fragment() {
                 binding.noCompletionsText.visibility = View.INVISIBLE
             } else {
                 binding.noCompletionsText.visibility = View.VISIBLE
+                binding.individualCompletionHistoryListTitle.visibility = View.INVISIBLE
             }
         }
 

@@ -14,17 +14,13 @@ class IndividualRecordCompletionHistoryAdapter(
     RecyclerView.Adapter<IndividualRecordCompletionHistoryAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val view: View
-        val titleText: TextView
-        val completionDateTimeText: TextView
-        val periodText: TextView
-        val completionNumberTextView: TextView
+        val completionText: TextView
+        val dateTimeText: TextView
 
         init {
             this.view = view;
-            titleText = view.findViewById(R.id.individual_completion_record_name)
-            completionDateTimeText = view.findViewById(R.id.individual_completion_date_time)
-            periodText = view.findViewById(R.id.individual_completion_record_period)
-            completionNumberTextView = view.findViewById(R.id.individual_completion_number)
+            completionText = view.findViewById(R.id.individual_completion_completions_value)
+            dateTimeText = view.findViewById(R.id.individual_completion_date_time)
         }
     }
 
@@ -33,17 +29,17 @@ class IndividualRecordCompletionHistoryAdapter(
         viewType: Int
     ): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_individual_record_completion, parent, false)
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.list_item_individual_record_completion, parent, false)
 
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val completion = completions.get(position)
-        holder.titleText.text = completion.recordTitle
-        holder.completionDateTimeText.text = completion.completionDateTime.format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm"))
-        holder.periodText.text = completion.recordPeriod.value
-        holder.completionNumberTextView.text = completion.completionNumber.toString()
+        holder.completionText.text = completion.completionNumber.toString()
+        holder.dateTimeText.text =
+            completion.completionDateTime.format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm"))
     }
 
     override fun getItemCount() = completions.size

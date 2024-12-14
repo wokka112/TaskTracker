@@ -6,51 +6,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/individual_completion_record_name"
+        android:id="@+id/individual_completion_completions_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/individual_completion_record_period_header"
-        android:layout_marginLeft="5dp"
-        tools:text="Test Title"
+        android:layout_marginLeft="10dp"
+        tools:text="1"
         android:textColor="@color/black"
-        android:textSize="20sp"
-        android:maxLines="1"
-        android:ellipsize="end"/>
-
-    <TextView
-        android:id="@+id/individual_completion_record_period_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/individual_completion_record_name"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginLeft="5dp"
-        android:textSize="14sp"
-        android:text="Period:"
-        android:maxLines="1"
-        android:ellipsize="end"/>
-
-    <TextView
-        android:id="@+id/individual_completion_record_period"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/individual_completion_record_period_header"
-        app:layout_constraintTop_toTopOf="@id/individual_completion_record_period_header"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginLeft="5dp"
-        android:textSize="14sp"
-        tools:text="Weekly"
-        android:maxLines="1"
-        android:ellipsize="end"/>
+        android:textSize="20sp" />
 
     <TextView
         android:id="@+id/individual_completion_date_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/individual_completion_record_name"
-        app:layout_constraintBottom_toBottomOf="@id/individual_completion_record_name"
+        app:layout_constraintTop_toTopOf="@id/individual_completion_completions_value"
+        app:layout_constraintBottom_toBottomOf="@id/individual_completion_completions_value"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="10dp"
         tools:text="2024-07-11 15:34"
@@ -58,29 +29,4 @@
         android:textSize="20sp"
         android:maxLines="1"
         android:ellipsize="end" />
-
-    <TextView
-        android:id="@+id/individual_completion_number_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/individual_completion_record_period_header"
-        app:layout_constraintRight_toRightOf="@id/individual_completion_date_time"
-        app:layout_constraintLeft_toLeftOf="@id/individual_completion_date_time"
-        android:layout_marginRight="20dp"
-        android:textSize="14sp"
-        android:text="Completion Number:"
-        android:maxLines="1"
-        android:ellipsize="end"/>
-
-    <TextView
-        android:id="@+id/individual_completion_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="@id/individual_completion_number_header"
-        app:layout_constraintLeft_toRightOf="@id/individual_completion_number_header"
-        android:layout_marginLeft="5dp"
-        android:textSize="14sp"
-        tools:text="2/4"
-        android:maxLines="1"
-        android:ellipsize="end"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

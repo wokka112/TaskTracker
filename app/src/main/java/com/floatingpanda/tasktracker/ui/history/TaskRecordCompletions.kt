@@ -10,5 +10,5 @@ data class TaskRecordCompletions(
     val recordPeriod: Period,
     val periodStartDate: LocalDate,
     val completions: Int,
-    val totalCompletions: Int
+    val targetCompletions: Int
 )

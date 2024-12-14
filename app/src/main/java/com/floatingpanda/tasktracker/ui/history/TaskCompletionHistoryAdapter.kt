@@ -56,7 +56,7 @@ class TaskCompletionHistoryAdapter(
         holder.titleText.text = completions.recordTitle
         holder.periodText.text = completions.recordPeriod.toString()
         holder.completionNumberTextView.text =
-            completions.completions.toString() + "/" + completions.totalCompletions
+            completions.completions.toString() + "/" + completions.targetCompletions
         holder.startDateText.text = completions.periodStartDate.toString()
         holder.endDateText.text =
             calculateEndDate(completions.periodStartDate, completions.recordPeriod).toString()
