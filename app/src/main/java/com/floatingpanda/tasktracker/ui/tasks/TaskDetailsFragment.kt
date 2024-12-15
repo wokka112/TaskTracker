@@ -70,7 +70,7 @@ class TaskDetailsFragment : Fragment() {
 
             val timesPerSubPeriod = binding.taskScheduleTimesPerSubPeriod
             if (template.maxTimesPerSubPeriod == null)
-                timesPerSubPeriod.text = "0"
+                timesPerSubPeriod.text = "N/A"
             else
                 timesPerSubPeriod.text = template.maxTimesPerSubPeriod!!.toString()
 
