@@ -74,15 +74,16 @@ class TaskCompletionHistoryAdapter(
         }
     }
 
+    //TODO probably better way of doing this
     private fun calculateEndDate(startDate: LocalDate, repeatPeriod: Period): LocalDate {
         if (repeatPeriod == Period.DAILY)
             return startDate;
         if (repeatPeriod == Period.WEEKLY)
-            return startDate.plusWeeks(1)
+            return startDate.plusWeeks(1).minusDays(1)
         if (repeatPeriod == Period.MONTHLY)
-            return startDate.plusMonths(1)
+            return startDate.plusMonths(1).minusDays(1)
         if (repeatPeriod == Period.YEARLY)
-            return startDate.plusYears(1)
+            return startDate.plusYears(1).minusDays(1)
 
         return startDate
     }

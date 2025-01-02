@@ -24,7 +24,6 @@ import org.mongodb.kbson.ObjectId
 import java.time.LocalDate
 
 //TODO how to deal with tasks which are one offs rather than repeating?
-//TODO how to create records when periods change? Would need a polling thing maybe...
 class TaskUpsertViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,
     private val recordRepository: RepeatableTaskRecordRepository,
@@ -124,13 +123,11 @@ class TaskUpsertViewModel(
         viewModelScope.launch {
             realmHelper.writeTransaction {
                 val savedTemplate = templateRepository.writeTemplate(this, template)
-                val today = LocalDate.now()
                 //TODO grab latest record if it exists and is active before creating this one to account for updating a template
                 val initialRecord =
                     RepeatableTaskRecord(
                         savedTemplate,
                         LocalDate.now(),
-                        calculateEndDay(today, template.repeatPeriod)
                     )
                 recordRepository.writeRecord(this, initialRecord)
             }
@@ -324,27 +321,6 @@ class TaskUpsertViewModel(
         }
 
         return true
-    }
-
-    private fun calculateEndDay(today: LocalDate, period: Period): LocalDate {
-        return when (period) {
-            Period.WEEKLY -> {
-                val dayOfWeek = today.dayOfWeek.value
-                today.plusDays((7 - (dayOfWeek - 1)).toLong())
-            }
-
-            Period.MONTHLY -> {
-                today.plusMonths(1).withDayOfMonth(1)
-            }
-
-            Period.YEARLY -> {
-                today.plusYears(1).withDayOfYear(1)
-            }
-
-            else -> {
-                today.plusDays(1)
-            }
-        }
     }
 
     companion object {

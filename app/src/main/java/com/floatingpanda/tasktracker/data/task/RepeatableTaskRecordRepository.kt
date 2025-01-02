@@ -57,7 +57,6 @@ class RepeatableTaskRecordRepository(private val realm: Realm) {
             liveRecord.templateCategory = record.templateCategory
             liveRecord.templateId = record.templateId
             liveRecord.startDate = record.startDate
-            liveRecord.endDate = record.endDate
             liveRecord.completions = record.completions
         }
     }

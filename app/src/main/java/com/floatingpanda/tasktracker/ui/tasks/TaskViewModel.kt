@@ -6,9 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.floatingpanda.tasktracker.MainApplication
+import com.floatingpanda.tasktracker.RealmHelper
+import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecord
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskRecordRepository
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplate
 import com.floatingpanda.tasktracker.data.task.RepeatableTaskTemplateRepository
@@ -16,7 +19,9 @@ import com.floatingpanda.tasktracker.ui.history.TaskRecordCompletions
 import io.realm.kotlin.notifications.InitialResults
 import io.realm.kotlin.notifications.ResultsChange
 import io.realm.kotlin.notifications.UpdatedResults
+import kotlinx.coroutines.launch
 import org.mongodb.kbson.ObjectId
+import java.time.LocalDate
 
 class TaskViewModel(
     private val templateRepository: RepeatableTaskTemplateRepository,

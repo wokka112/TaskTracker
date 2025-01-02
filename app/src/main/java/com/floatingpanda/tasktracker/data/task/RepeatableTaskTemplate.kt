@@ -19,7 +19,6 @@ class RepeatableTaskTemplate() : RealmObject {
     var title: String = ""
     var info: String? = null
 
-    // TODO should categories be expanded to be a list? So we can have multiple categories per task?
     var category: String = ""
     private var repeatPeriodInternal: String = Period.DAILY.name
     var timesPerPeriod: Int = 1
@@ -39,8 +38,7 @@ class RepeatableTaskTemplate() : RealmObject {
             return try {
                 Period.valueOf(repeatPeriodInternal)
             } catch (e: Exception) {
-                //TODO should we be doing this???
-                Period.DAILY
+                throw IllegalStateException("Period is stored internally in an unrecognised format - " + repeatPeriodInternal)
             }
         }
         set(period: Period) {

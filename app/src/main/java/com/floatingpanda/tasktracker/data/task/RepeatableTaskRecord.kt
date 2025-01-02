@@ -20,13 +20,10 @@ import java.util.stream.Collectors
 class RepeatableTaskRecord(
     template: RepeatableTaskTemplate,
     startDate: LocalDate,
-    // TODO endDate seems unnecessary, we can calculate that
-    endDate: LocalDate
 ) : RealmObject {
     constructor() : this(
         RepeatableTaskTemplate(),
         LocalDate.now(),
-        LocalDate.now()
     ) // Empty constructor required by Realm
 
     @PrimaryKey
@@ -37,22 +34,38 @@ class RepeatableTaskRecord(
     var templateCategory: String = template.category
     var targetCompletionsPerRepeatPeriod: Int = template.timesPerPeriod
     var maxCompletionsPerSubPeriod: Int? = template.maxTimesPerSubPeriod
+
     private var completionsInternal: RealmList<String> = realmListOf()
     private var startDateInternal: String
-    private var endDateInternal: String
-    private var repeatPeriodInternal: String = template.repeatPeriod.value
-    private var subPeriodInternal: String? = template.subRepeatPeriod?.value
+    private var repeatPeriodInternal: String = template.repeatPeriod.name
+    private var subPeriodInternal: String? = template.subRepeatPeriod?.name
+    var completions: List<OffsetDateTime>
+        get() {
+            return completionsInternal.stream().map(OffsetDateTime::parse)
+                .collect(Collectors.toList())
+        }
+        set(completions: List<OffsetDateTime>) {
+            completionsInternal =
+                completions.stream().map(OffsetDateTime::toString).collect(Collectors.toList())
+                    .toRealmList()
+        }
+    var startDate: LocalDate
+        get() {
+            return LocalDate.parse(startDateInternal)
+        }
+        set(date: LocalDate) {
+            startDateInternal = date.toString()
+        }
     var repeatPeriod: Period
         get() {
             return try {
                 Period.valueOf(repeatPeriodInternal)
             } catch (e: Exception) {
-                //TODO should we be doing this???
-                Period.DAILY
+                throw IllegalStateException("Period is stored internally in an unrecognised format - " + repeatPeriodInternal)
             }
         }
         set(period: Period) {
-            repeatPeriodInternal = period.value
+            repeatPeriodInternal = period.name
         }
     var subPeriod: Period?
         get() {
@@ -63,31 +76,13 @@ class RepeatableTaskRecord(
             }
         }
         set(period: Period?) {
-            subPeriodInternal = period?.value
+            subPeriodInternal = period?.name
         }
-    var startDate: LocalDate
+
+    val endDate: LocalDate
         get() {
-            return LocalDate.parse(startDateInternal)
-        }
-        set(date: LocalDate) {
-            startDateInternal = date.toString()
-        }
-    var endDate: LocalDate
-        get() {
-            return LocalDate.parse(endDateInternal)
-        }
-        set(date: LocalDate) {
-            endDateInternal = date.toString()
-        }
-    var completions: List<OffsetDateTime>
-        get() {
-            return completionsInternal.stream().map(OffsetDateTime::parse)
-                .collect(Collectors.toList())
-        }
-        set(completions: List<OffsetDateTime>) {
-            completionsInternal =
-                completions.stream().map(OffsetDateTime::toString).collect(Collectors.toList())
-                    .toRealmList()
+            val startDate = startDate
+            return startDate.plus(1, repeatPeriod.convertToTemporalUnit()).minusDays(1)
         }
 
     val isComplete: Boolean
@@ -99,7 +94,6 @@ class RepeatableTaskRecord(
 
     init {
         startDateInternal = startDate.toString()
-        endDateInternal = endDate.toString()
     }
 
     fun convertIntoRecordCompletions(): TaskRecordCompletions {
@@ -207,7 +201,6 @@ class RepeatableTaskRecord(
                 && other.templateCategory == this.templateCategory
                 && other.templateInfo == this.templateInfo
                 && other.startDate == this.startDate
-                && other.endDate == this.endDate
     }
 
     override fun hashCode(): Int {
@@ -219,8 +212,7 @@ class RepeatableTaskRecord(
             maxCompletionsPerSubPeriod,
             templateTitle,
             templateInfo,
-            startDate,
-            endDate
+            startDate
         )
     }
 }

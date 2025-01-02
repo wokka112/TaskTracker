@@ -1,9 +1,8 @@
 package com.floatingpanda.tasktracker.data
 
-import java.util.Calendar
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 
-// TODO expand this to include more periods? What about fortnightly? Quarterly? etc.?
-//   Are quarterly and yearly overkill for now?
 enum class Period(val value: String) {
     NONE("None"),
     DAILY("Daily"),
@@ -11,20 +10,20 @@ enum class Period(val value: String) {
     MONTHLY("Monthly"),
     YEARLY("Yearly");
 
-    fun convertToCalendarKey(): Int {
+    fun convertToTemporalUnit(): TemporalUnit {
         if (this == DAILY)
-            return Calendar.DAY_OF_WEEK
+            return ChronoUnit.DAYS
 
         if (this == WEEKLY)
-            return Calendar.WEEK_OF_YEAR
+            return ChronoUnit.WEEKS
 
         if (this == MONTHLY)
-            return Calendar.MONTH
+            return ChronoUnit.MONTHS
 
         if (this == YEARLY)
-            return Calendar.YEAR
+            return ChronoUnit.YEARS
 
-        return -1
+        return ChronoUnit.FOREVER
     }
 
     companion object {

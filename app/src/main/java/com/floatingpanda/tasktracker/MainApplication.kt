@@ -71,34 +71,33 @@ class MainApplication : Application() {
         val breakFromWorkTemplate =
             templates.stream().filter { it.title.equals("Take a break from work") }.findAny().get()
 
-        val oldestRunRecord = RepeatableTaskRecord(runTemplate, lastMonth, weekLaterThanLastMonth)
+        val oldestRunRecord = RepeatableTaskRecord(runTemplate, lastMonth)
         oldestRunRecord.completions = listOf(
             lastMonth.atTime(OffsetTime.now()),
             lastMonth.plusDays(1).atTime(OffsetTime.now())
         )
 
         val oldRunRecord =
-            RepeatableTaskRecord(runTemplate, weekLaterThanLastMonth, twoWeeksLaterThanLastMonth)
+            RepeatableTaskRecord(runTemplate, weekLaterThanLastMonth)
         oldRunRecord.completions = listOf(
             weekLaterThanLastMonth.atTime(OffsetTime.now()),
             weekLaterThanLastMonth.plusDays(3).atTime(OffsetTime.now()),
             weekLaterThanLastMonth.plusDays(6).atTime(OffsetTime.now())
         )
 
-        val wakeUpRecord = RepeatableTaskRecord(wakeUpTemplate, today, tomorrow)
-        val stretchRecord = RepeatableTaskRecord(stretchTemplate, today, tomorrow)
-        val ocdGroupRecord = RepeatableTaskRecord(ocdGroupTemplate, today, nextWeek)
-        val runRecord = RepeatableTaskRecord(runTemplate, today, nextWeek)
-        val readRecord = RepeatableTaskRecord(readTemplate, today, nextWeek)
-        val walkRecord = RepeatableTaskRecord(walkTemplate, today, nextWeek)
+        val wakeUpRecord = RepeatableTaskRecord(wakeUpTemplate, today)
+        val stretchRecord = RepeatableTaskRecord(stretchTemplate, today)
+        val ocdGroupRecord = RepeatableTaskRecord(ocdGroupTemplate, today)
+        val runRecord = RepeatableTaskRecord(runTemplate, today)
+        val readRecord = RepeatableTaskRecord(readTemplate, today)
+        val walkRecord = RepeatableTaskRecord(walkTemplate, today)
         val exploreWildernessRecord = RepeatableTaskRecord(
             exploreWildernessTemplate,
-            today,
-            nextMonth
+            today
         )
-        val rosieRecord = RepeatableTaskRecord(rosieTemplate, today, nextMonth)
-        val holidayRecord = RepeatableTaskRecord(holidayTemplate, today, nextYear)
-        val breakFromWorkRecord = RepeatableTaskRecord(breakFromWorkTemplate, today, nextYear)
+        val rosieRecord = RepeatableTaskRecord(rosieTemplate, today)
+        val holidayRecord = RepeatableTaskRecord(holidayTemplate, today)
+        val breakFromWorkRecord = RepeatableTaskRecord(breakFromWorkTemplate, today)
 
         return listOf(
             wakeUpRecord,
